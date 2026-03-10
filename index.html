@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LaborHive — Find Skilled Workers, Fast</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --border: #252a38;
+    --accent: #f5c842;
+    --accent2: #ff6b35;
+    --text: #eceef5;
+    --muted: #7a8099;
+    --card: #181c28;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 6vw;
+    background: rgba(13,15,20,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 10px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,200,66,0.3); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 6vw 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(245,200,66,0.10) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+    pointer-events: none;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,107,53,0.08) 0%, transparent 70%);
+    bottom: 10%; right: 10%;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245,200,66,0.1);
+    border: 1px solid rgba(245,200,66,0.25);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 1.5s infinite; }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    max-width: 900px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+  }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    max-width: 560px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-search {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 580px;
+    animation: fadeUp 0.6s 0.3s ease both;
+    box-shadow: 0 0 0 0 rgba(245,200,66,0);
+    transition: box-shadow 0.3s;
+  }
+  .hero-search:focus-within {
+    box-shadow: 0 0 0 3px rgba(245,200,66,0.2);
+    border-color: rgba(245,200,66,0.4);
+  }
+
+  .hero-search input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 16px 20px;
+  }
+  .hero-search input::placeholder { color: var(--muted); }
+
+  .hero-search button {
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    padding: 0 28px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .hero-search button:hover { background: #e8b92e; }
+
+  .hero-tags {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+  .hero-tags span {
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 5px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hero-tags span:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-stats {
+    margin-top: 4rem;
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CATEGORIES ── */
+  .section {
+    padding: 100px 6vw;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    max-width: 600px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .view-all {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+  .view-all:hover { color: var(--accent); border-color: var(--accent); }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+  .cat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+
+  .cat-icon {
+    font-size: 2rem;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .cat-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .cat-count {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* ── WORKERS ── */
+  .workers-section { background: var(--surface); }
+
+  .workers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .worker-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .worker-card:hover {
+    border-color: rgba(245,200,66,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  }
+
+  .worker-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .worker-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+
+  .worker-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .worker-role {
+    font-size: 0.8rem;
+    color: var(--accent2);
+    margin-top: 1px;
+  }
+
+  .worker-rating {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .worker-bio {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .worker-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .worker-tags span {
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .worker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .worker-rate {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+  }
+  .worker-rate span { font-size: 0.75rem; font-weight: 400; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+
+  .hire-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 8px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hire-btn:hover {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0;
+    position: relative;
+    margin-top: 3rem;
+  }
+
+  .step {
+    padding: 36px 32px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 60%;
+    background: var(--border);
+  }
+
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: rgba(245,200,66,0.12);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .step p {
+    font-size: 0.87rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .step-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  /* ── CTA BANNER ── */
+  .cta-section {
+    padding: 100px 6vw;
+    background: var(--bg);
+  }
+
+  .cta-box {
+    background: linear-gradient(135deg, rgba(245,200,66,0.08) 0%, rgba(255,107,53,0.05) 100%);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 20px;
+    padding: 72px 10vw;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 300px;
+    background: radial-gradient(ellipse, rgba(245,200,66,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+
+  .cta-box p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(245,200,66,0.3); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 6vw 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--muted);
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 8px;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ── AVAILABILITY DOT ── */
+  .avail {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Labor<span>Hive</span></a>
+  <ul>
+    <li><a href="#categories">Services</a></li>
+    <li><a href="#workers">Workers</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#">Post a Job</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Get Started →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-badge">🔥 Trusted by 12,000+ businesses</div>
+  <h1>Hire <em>Skilled Workers</em><br>In Hours, Not Days</h1>
+  <p class="hero-sub">Connect with verified laborers, tradespeople, and service professionals ready to work — on demand or long-term.</p>
+
+  <div class="hero-search">
+    <input type="text" placeholder="What service do you need? e.g. Plumber, Electrician…" />
+    <button>Find Workers</button>
+  </div>
+
+  <div class="hero-tags">
+    <span>🔧 Plumbing</span>
+    <span>⚡ Electrical</span>
+    <span>🏗️ Construction</span>
+    <span>🧹 Cleaning</span>
+    <span>🌿 Landscaping</span>
+    <span>🎨 Painting</span>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">24K<span>+</span></div>
+      <div class="stat-label">Verified Workers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98<span>%</span></div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2hr<span>↓</span></div>
+      <div class="stat-label">Avg. Response Time</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Browse by Service</div>
+      <h2 class="section-title">Every Skill You Need, Under One Roof</h2>
+    </div>
+    <a href="#" class="view-all">View all categories →</a>
+  </div>
+
+  <div class="categories-grid">
+    <a href="#" class="cat-card"><span class="cat-icon">⚡</span><div class="cat-name">Electrical</div><div class="cat-count">1,240 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🔧</span><div class="cat-name">Plumbing</div><div class="cat-count">980 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🏗️</span><div class="cat-name">Construction</div><div class="cat-count">2,100 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🎨</span><div class="cat-name">Painting</div><div class="cat-count">760 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🧹</span><div class="cat-name">Cleaning</div><div class="cat-count">1,580 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🌿</span><div class="cat-name">Landscaping</div><div class="cat-count">640 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🪵</span><div class="cat-name">Carpentry</div><div class="cat-count">890 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🏠</span><div class="cat-name">Roofing</div><div class="cat-count">430 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">❄️</span><div class="cat-name">HVAC</div><div class="cat-count">510 workers</div></a>
+    <a href="#" class="cat-card"><span class="cat-icon">🚚</span><div class="cat-name">Moving</div><div class="cat-count">720 workers</div></a>
+  </div>
+</section>
+
+<!-- TOP WORKERS -->
+<section class="section workers-section" id="workers">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Top Rated</div>
+      <h2 class="section-title">Verified Professionals Ready to Work</h2>
+    </div>
+    <a href="#" class="view-all">Browse all workers →</a>
+  </div>
+
+  <div class="workers-grid">
+
+    <div class="worker-card">
+      <div class="worker-top">
+        <div class="worker-avatar" style="background:#1e2535">👷</div>
+        <div class="worker-info">
+          <h3>Marcus T.</h3>
+          <div class="worker-role">Master Electrician</div>
+        </div>
+        <div class="worker-rating">★ 4.97</div>
+      </div>
+      <p class="worker-bio">15 years of residential & commercial wiring. Licensed in 3 states. Same-day availability.</p>
+      <div class="worker-tags">
+        <span>Panel Upgrades</span><span>EV Chargers</span><span>Smart Home</span>
+      </div>
+      <div class="worker-footer">
+        <div class="worker-rate">$85<span>/hr</span></div>
+        <button class="hire-btn"><span class="avail"></span>Hire Now</button>
+      </div>
+    </div>
+
+    <div class="worker-card">
+      <div class="worker-top">
+        <div class="worker-avatar" style="background:#1e2535">🔧</div>
+        <div class="worker-info">
+          <h3>Leila R.</h3>
+          <div class="worker-role">Licensed Plumber</div>
+        </div>
+        <div class="worker-rating">★ 4.94</div>
+      </div>
+      <p class="worker-bio">Specialist in pipe repair, bathroom remodels, and commercial installs. 24/7 emergency calls.</p>
+      <div class="worker-tags">
+        <span>Leak Repair</span><span>Remodels</span><span>Drain Cleaning</span>
+      </div>
+      <div class="worker-footer">
+        <div class="worker-rate">$75<span>/hr</span></div>
+        <button class="hire-btn"><span class="avail"></span>Hire Now</button>
+      </div>
+    </div>
+
+    <div class="worker-card">
+      <div class="worker-top">
+        <div class="worker-avatar" style="background:#1e2535">🏗️</div>
+        <div class="worker-info">
+          <h3>David K.</h3>
+          <div class="worker-role">General Contractor</div>
+        </div>
+        <div class="worker-rating">★ 4.91</div>
+      </div>
+      <p class="worker-bio">Full-service renovations, decks, and additions. Manages crew of 6. Fully insured & bonded.</p>
+      <div class="worker-tags">
+        <span>Renovations</span><span>Decks</span><span>Project Mgmt</span>
+      </div>
+      <div class="worker-footer">
+        <div class="worker-rate">$95<span>/hr</span></div>
+        <button class="hire-btn"><span class="avail"></span>Hire Now</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div style="text-align:center; margin-bottom: 0.5rem;">
+    <div class="section-label" style="display:inline-block">Simple Process</div>
+  </div>
+  <h2 class="section-title" style="text-align:center; margin: 0 auto 0.5rem;">How LaborHive Works</h2>
+
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-top: 3rem; overflow: hidden;">
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <span class="step-icon">📋</span>
+        <h3>Post Your Job</h3>
+        <p>Describe what you need, set your budget, and pick a timeline. It takes under 2 minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <span class="step-icon">👥</span>
+        <h3>Get Matched</h3>
+        <p>We surface verified workers in your area who match your job. Review profiles, ratings, and past work.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <span class="step-icon">💬</span>
+        <h3>Chat & Book</h3>
+        <p>Message workers directly, agree on scope, and book with secure escrow payment — no risk.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <span class="step-icon">✅</span>
+        <h3>Done & Paid</h3>
+        <p>Approve the work, release payment, and leave a review. Your worker builds their reputation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Ready to Get Work Done?</h2>
+    <p>Join thousands of businesses and homeowners who use LaborHive to find reliable help fast.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary">Post a Job Free →</a>
+      <a href="#" class="btn-secondary">Join as a Worker</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Labor<span>Hive</span></a>
+  <ul class="footer-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">How it Works</a></li>
+    <li><a href="#">Find Workers</a></li>
+    <li><a href="#">Post a Job</a></li>
+    <li><a href="#">Support</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 LaborHive. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
