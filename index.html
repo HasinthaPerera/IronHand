@@ -834,5 +834,56 @@
   <div class="footer-copy">© 2026 IronHand. All rights reserved.</div>
 </footer>
 
+<script>
+  // 1. The URL of your Java Backend (Running in IntelliJ)
+  const API_URL = 'http://localhost:8080/api/workers';
+
+  async function loadWorkers() {
+    try {
+      // 2. Fetch data from the API
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Network response was not ok');
+      
+      const workers = await response.json();
+
+      // 3. Find the container in your HTML
+      const grid = document.querySelector('.workers-grid');
+      
+      // Clear the hardcoded "Marcus T." and "Leila R." cards
+      grid.innerHTML = '';
+
+      // 4. Map the database data into your beautiful HTML cards
+      workers.forEach(worker => {
+        const card = `
+          <div class="worker-card">
+            <div class="worker-top">
+              <div class="worker-avatar" style="background:#1e2535">${worker.icon}</div>
+              <div class="worker-info">
+                <h3>${worker.name}</h3>
+                <div class="worker-role">${worker.role}</div>
+              </div>
+              <div class="worker-rating">★ ${worker.rating}</div>
+            </div>
+            <p class="worker-bio">${worker.bio}</p>
+            <div class="worker-tags">
+               <span>Professional</span><span>Verified</span>
+            </div>
+            <div class="worker-footer">
+              <div class="worker-rate">$${worker.rate}<span>/hr</span></div>
+              <button class="hire-btn"><span class="avail"></span>Hire Now</button>
+            </div>
+          </div>
+        `;
+        grid.innerHTML += card;
+      });
+    } catch (error) {
+      console.error('Error fetching workers:', error);
+    }
+  }
+
+  // Run the function as soon as the page loads
+  document.addEventListener('DOMContentLoaded', loadWorkers);
+</script>
+
 </body>
 </html>
