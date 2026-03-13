@@ -1,7 +1,7 @@
 package com.ironhand.backend.controller;
 
 import com.ironhand.backend.model.Worker;
-import com.ironhand.backend.repository.WorkerRepository;
+import com.ironhand.backend.repository.workerrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class WorkerController {
 
     @Autowired
-    private WorkerRepository workerRepository;
+    private workerrepository workerRepository;
 
     @GetMapping
     public List<Worker> getAllWorkers() {
