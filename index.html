@@ -835,53 +835,82 @@
 </footer>
 
 <script>
-  // 1. The URL of your Java Backend (Running in IntelliJ)
   const API_URL = 'http://localhost:8080/api/workers';
+  let allWorkers = []; // Store original data for filtering
 
+  // 1. Fetch Data with Loading State
   async function loadWorkers() {
+    const grid = document.querySelector('.workers-grid');
+    grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Connecting to Java Backend...</p>';
+
     try {
-      // 2. Fetch data from the API
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) throw new Error('Backend Offline');
       
-      const workers = await response.json();
-
-      // 3. Find the container in your HTML
-      const grid = document.querySelector('.workers-grid');
-      
-      // Clear the hardcoded "Marcus T." and "Leila R." cards
-      grid.innerHTML = '';
-
-      // 4. Map the database data into your beautiful HTML cards
-      workers.forEach(worker => {
-        const card = `
-          <div class="worker-card">
-            <div class="worker-top">
-              <div class="worker-avatar" style="background:#1e2535">${worker.icon}</div>
-              <div class="worker-info">
-                <h3>${worker.name}</h3>
-                <div class="worker-role">${worker.role}</div>
-              </div>
-              <div class="worker-rating">★ ${worker.rating}</div>
-            </div>
-            <p class="worker-bio">${worker.bio}</p>
-            <div class="worker-tags">
-               <span>Professional</span><span>Verified</span>
-            </div>
-            <div class="worker-footer">
-              <div class="worker-rate">$${worker.rate}<span>/hr</span></div>
-              <button class="hire-btn"><span class="avail"></span>Hire Now</button>
-            </div>
-          </div>
-        `;
-        grid.innerHTML += card;
-      });
+      allWorkers = await response.json();
+      renderWorkers(allWorkers);
     } catch (error) {
-      console.error('Error fetching workers:', error);
+      grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color: var(--accent2);">
+        Error: Could not connect to the database. Make sure IntelliJ is running!
+      </p>`;
+      console.error('Connection Error:', error);
     }
   }
 
-  // Run the function as soon as the page loads
+  // 2. Optimized Render Function (Reusable)
+  function renderWorkers(workersToDisplay) {
+    const grid = document.querySelector('.workers-grid');
+    
+    if (workersToDisplay.length === 0) {
+      grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No workers found matching that criteria.</p>';
+      return;
+    }
+
+    grid.innerHTML = workersToDisplay.map(worker => `
+      <div class="worker-card">
+        <div class="worker-top">
+          <div class="worker-avatar" style="background:#1e2535">${worker.icon || '👤'}</div>
+          <div class="worker-info">
+            <h3>${worker.name}</h3>
+            <div class="worker-role">${worker.role}</div>
+          </div>
+          <div class="worker-rating">★ ${worker.rating || 'N/A'}</div>
+        </div>
+        <p class="worker-bio">${worker.bio}</p>
+        <div class="worker-footer">
+          <div class="worker-rate">$${worker.rate}<span>/hr</span></div>
+          <button class="hire-btn" onclick="alert('Hiring ${worker.name}...')">Hire Now</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 3. Real-Time Search Logic
+  const searchInput = document.querySelector('.hero-search input');
+  searchInput.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = allWorkers.filter(w => 
+      w.role.toLowerCase().includes(term) || 
+      w.name.toLowerCase().includes(term)
+    );
+    renderWorkers(filtered);
+  });
+
+  // 4. Category Filter Logic
+  document.querySelectorAll('.hero-tags span, .cat-card').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const category = (item.innerText || item.querySelector('.cat-name').innerText)
+                        .replace(/[^\w\s]/gi, '').trim().toLowerCase();
+      
+      const filtered = allWorkers.filter(w => w.role.toLowerCase().includes(category));
+      renderWorkers(filtered);
+      
+      // Scroll to workers section
+      document.getElementById('workers').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
   document.addEventListener('DOMContentLoaded', loadWorkers);
 </script>
 
