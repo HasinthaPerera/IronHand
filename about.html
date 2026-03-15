@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>About IronHand — Our Mission</title>
+<title>About IronHand — Engineering the Future</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -17,9 +17,9 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; overflow-x: hidden; }
 
-  /* ── NAV (Matches Index) ── */
+  /* ── SHARED NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
@@ -29,79 +29,95 @@
   .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text); text-decoration: none; }
   .logo span { color: var(--accent); }
   nav ul { list-style: none; display: flex; gap: 2rem; }
-  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; }
+  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+  nav ul a:hover { color: var(--accent); }
 
-  /* ── ABOUT CONTENT ── */
-  .about-hero {
-    padding: 160px 6vw 80px; text-align: center;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 204, 51, 0.05) 0%, transparent 50%);
+  /* ── ANIMATED BACKGROUND ── */
+  .bg-glow {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 204, 51, 0.03) 0%, transparent 50%);
+    pointer-events: none; z-index: -1;
   }
-  h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -2px; }
-  h1 span { color: var(--accent); }
 
-  .content-section { max-width: 800px; margin: 0 auto; padding: 60px 6vw; }
-  .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+  /* ── CONTENT ENHANCEMENTS ── */
+  .about-hero {
+    padding: 200px 6vw 100px; text-align: center;
+  }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 8vw, 5rem); font-weight: 800; letter-spacing: -3px; line-height: 1; }
+  h1 span { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+
+  .grid-layout {
+    display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px;
+    max-width: 1100px; margin: 0 auto; padding: 100px 6vw;
+  }
+
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .reveal.active { opacity: 1; transform: translateY(0); }
 
-  .mission-box {
-    background: var(--surface); border: 1px solid var(--border);
-    padding: 40px; border-radius: 20px; margin-top: 40px;
+  .glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    padding: 40px; border-radius: 24px;
+    backdrop-filter: blur(10px);
+    transition: 0.4s;
   }
-  h2 { font-family: 'Syne', sans-serif; margin-bottom: 15px; color: var(--accent); }
+  .glass-card:hover { border-color: var(--accent); transform: scale(1.02); }
 
-  .tech-stack {
-    display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;
-  }
-  .tech-item {
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; color: var(--muted);
+  .tech-stack { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+  .tech-tag {
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 100px; font-size: 0.8rem;
+    font-weight: 600; color: var(--accent);
   }
 
-  footer { text-align: center; padding: 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; }
+  @media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
+
+<div class="bg-glow"></div>
 
 <nav>
   <a href="index.html" class="logo">Iron<span>Hand</span></a>
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="index.html#workers">Workers</a></li>
+    <li><a href="about.html" style="color: var(--accent);">About</a></li>
   </ul>
 </nav>
 
 <section class="about-hero">
-  <h1 class="reveal">Built to Power the <span>Modern Workforce</span></h1>
+  <h1 class="reveal">We Build <span>Bridges</span><br>Not Just Apps.</h1>
 </section>
 
-<div class="content-section">
+<div class="grid-layout">
   <div class="reveal">
-    <h2>Our Story</h2>
-    <p>IronHand was born from a simple observation: finding reliable, skilled labor shouldn't take days of phone calls and uncertainty. We built a platform that bridges the gap between expert tradespeople and the businesses that need them.</p>
+    <h2 style="font-family: 'Syne'; font-size: 2rem; margin-bottom: 20px;">The Mision</h2>
+    <p style="color: var(--muted);">To provide a transparent, fast, and secure ecosystem where skill is the only currency that matters. Whether it's an emergency repair or a long-term construction project, we ensure the right hands are on the job.</p>
   </div>
-
-  <div class="mission-box reveal">
-    <h2>The Mission</h2>
-    <p>To provide a transparent, fast, and secure ecosystem where skill is the only currency that matters. Whether it's an emergency repair or a long-term construction project, we ensure the right hands are on the job.</p>
-  </div>
-
-  <div class="reveal" style="margin-top: 60px;">
-    <h2>The Technology</h2>
-    <p>As a project developed with a focus on <strong>Information Systems</strong>, IronHand utilizes a robust stack to ensure data integrity and real-time performance.</p>
+  
+  <div class="glass-card reveal">
+    <h3 style="font-family: 'Syne'; margin-bottom: 15px;">Information Systems Excellence</h3>
+    <p>This project is a testament to modern full-stack development. Every interaction—from real-time search to database fetching—is optimized for high-performance Information Systems environments.</p>
     <div class="tech-stack">
-      <div class="tech-item">Java Spring Boot</div>
-      <div class="tech-item">MySQL Database</div>
-      <div class="tech-item">RESTful API</div>
-      <div class="tech-item">JavaScript ES6</div>
+      <span class="tech-tag">Spring Boot</span>
+      <span class="tech-tag">JPA/Hibernate</span>
+      <span class="tech-tag">MySQL</span>
+      <span class="tech-tag">JavaScript ES6</span>
     </div>
   </div>
 </div>
 
-<footer>
-  © 2026 IronHand Project. Developed by Hasintha Heshan.
-</footer>
-
 <script>
+  // ── MOUSE FOLLOW EFFECT ──
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    document.querySelector('.bg-glow').style.setProperty('--x', `${x}%`);
+    document.querySelector('.bg-glow').style.setProperty('--y', `${y}%`);
+  });
+
+  // ── REVEAL LOGIC ──
   function reveal() {
     const reveals = document.querySelectorAll('.reveal');
     reveals.forEach(el => {
