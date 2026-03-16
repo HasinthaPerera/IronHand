@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login — IronHand</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #05070a;
+    --surface: #0c0f16;
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #ffcc33;
+    --text: #f0f2f5;
+    --muted: #8a91ad;
+  }
+  body { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: 'DM Sans', sans-serif; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0;
+  }
+  .login-card {
+    background: var(--surface);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  h2 { font-family: 'Syne'; font-size: 2rem; margin-bottom: 10px; }
+  h2 span { color: var(--accent); }
+  p { color: var(--muted); margin-bottom: 30px; font-size: 0.9rem; }
+  
+  .input-group { text-align: left; margin-bottom: 20px; }
+  label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--muted); }
+  input {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+  }
+  input:focus { border-color: var(--accent); }
+  
+  .login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Syne';
+    transition: 0.3s;
+  }
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(245,200,66,0.3); }
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <h2>Iron<span>Hand</span></h2>
+  <p>Welcome back! Please login to your account.</p>
+  
+  <form id="loginForm">
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" id="email" required placeholder="name@company.com">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" required placeholder="••••••••">
+    </div>
+    <button type="submit" class="login-btn">Sign In</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    
+    console.log("Login attempt:", { email, password });
+    alert("Login system connection pending...");
+  });
+</script>
+
+</body>
+</html>
