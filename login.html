@@ -68,6 +68,7 @@
 </style>
 </head>
 <body>
+  Don't have an account? <a href="register.html">Sign up</a>
 
 <div class="login-card">
   <h2>Iron<span>Hand</span></h2>
@@ -96,6 +97,31 @@
     console.log("Login attempt:", { email, password });
     alert("Login system connection pending...");
   });
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('http://localhost:8081/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+            alert("Success! Redirecting to Home...");
+            window.location.href = 'index.html'; // Redirect on success
+        } else {
+            const errorText = await response.text();
+            alert("Error: " + errorText);
+        }
+    } catch (error) {
+        console.error("Connection failed:", error);
+        alert("Could not connect to the Java server.");
+    }
+});
 </script>
 
 </body>

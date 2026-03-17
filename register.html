@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register — IronHand</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #05070a;
+    --surface: #0c0f16;
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #ffcc33;
+    --text: #f0f2f5;
+    --muted: #8a91ad;
+  }
+  body { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-family: 'DM Sans', sans-serif; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0;
+  }
+  .register-card {
+    background: var(--surface);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  h2 { font-family: 'Syne'; font-size: 2rem; margin-bottom: 10px; }
+  h2 span { color: var(--accent); }
+  p { color: var(--muted); margin-bottom: 30px; font-size: 0.9rem; }
+  
+  .input-group { text-align: left; margin-bottom: 20px; }
+  label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--muted); }
+  input {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+  }
+  input:focus { border-color: var(--accent); }
+  
+  .register-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Syne';
+    transition: 0.3s;
+  }
+  .register-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(245,200,66,0.3); }
+  .footer-text { margin-top: 20px; font-size: 0.85rem; color: var(--muted); }
+  .footer-text a { color: var(--accent); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="register-card">
+  <h2>Iron<span>Hand</span></h2>
+  <p>Create an account to get started.</p>
+  
+  <form id="registerForm">
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" id="email" required placeholder="name@company.com">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" required placeholder="Create a password">
+    </div>
+    <div class="input-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirmPassword" required placeholder="Repeat password">
+    </div>
+    <button type="submit" class="register-btn">Create Account</button>
+  </form>
+  
+  <div class="footer-text">
+    Already have an account? <a href="login.html">Login here</a>
+  </div>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8081/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+          alert("Registration Successful! You can now login.");
+          window.location.href = 'login.html';
+      } else {
+          const errorText = await response.text();
+          alert("Registration Failed: " + errorText);
+      }
+    } catch (error) {
+      alert("Could not connect to the Java server.");
+    }
+  });
+</script>
+
+</body>
+</html>
