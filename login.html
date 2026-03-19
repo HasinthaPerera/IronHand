@@ -14,6 +14,7 @@
     --text: #f0f2f5;
     --muted: #8a91ad;
   }
+
   body { 
     background: var(--bg); 
     color: var(--text); 
@@ -23,83 +24,125 @@
     align-items: center; 
     height: 100vh; 
     margin: 0;
+    /* Subtle background glow */
+    background: radial-gradient(circle at center, #10141d 0%, var(--bg) 100%);
   }
+
   .login-card {
     background: var(--surface);
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 24px;
     border: 1px solid var(--border);
-    width: 100%;
+    width: 90%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
   }
-  h2 { font-family: 'Syne'; font-size: 2rem; margin-bottom: 10px; }
+
+  h2 { font-family: 'Syne'; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -1px; }
   h2 span { color: var(--accent); }
-  p { color: var(--muted); margin-bottom: 30px; font-size: 0.9rem; }
+  .subtitle { color: var(--muted); margin-bottom: 32px; font-size: 0.95rem; }
   
   .input-group { text-align: left; margin-bottom: 20px; }
-  label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--muted); }
+  label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--muted); font-weight: 500; }
+  
   input {
     width: 100%;
-    padding: 14px;
-    background: var(--bg);
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
     outline: none;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    font-size: 1rem;
   }
-  input:focus { border-color: var(--accent); }
+  
+  input:focus { 
+    border-color: var(--accent); 
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 0 0 4px rgba(255, 204, 51, 0.1);
+  }
   
   .login-btn {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     background: var(--accent);
-    color: black;
+    color: #000;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
     font-family: 'Syne';
-    transition: 0.3s;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-top: 10px;
   }
-  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(245,200,66,0.3); }
+
+  .login-btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 20px rgba(245,200,66,0.2); 
+    background: #f7d46c;
+  }
+
+  .login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .signup-link {
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .signup-link a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .signup-link a:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
-  Don't have an account? <a href="register.html">Sign up</a>
 
 <div class="login-card">
   <h2>Iron<span>Hand</span></h2>
-  <p>Welcome back! Please login to your account.</p>
+  <p class="subtitle">Welcome back! Please login to your account.</p>
   
   <form id="loginForm">
     <div class="input-group">
-      <label>Email Address</label>
-      <input type="email" id="email" required placeholder="name@company.com">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" required placeholder="name@example.com">
     </div>
     <div class="input-group">
-      <label>Password</label>
+      <label for="password">Password</label>
       <input type="password" id="password" required placeholder="••••••••">
     </div>
-    <button type="submit" class="login-btn">Sign In</button>
+    <button type="submit" id="submitBtn" class="login-btn">Sign In</button>
   </form>
+
+  <div class="signup-link">
+    Don't have an account? <a href="register.html">Sign up</a>
+  </div>
 </div>
 
 <script>
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  const loginForm = document.getElementById('loginForm');
+  const submitBtn = document.getElementById('submitBtn');
 
-    
-    console.log("Login attempt:", { email, password });
-    alert("Login system connection pending...");
-  });
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // UI Feedback: Loading state
+    const originalBtnText = submitBtn.innerText;
+    submitBtn.innerText = "Authenticating...";
+    submitBtn.disabled = true;
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -111,15 +154,21 @@
         });
 
         if (response.ok) {
+            // Success! Store a small flag in localStorage to know the user is logged in
+            localStorage.setItem('isLoggedIn', 'true');
             alert("Success! Redirecting to Home...");
-            window.location.href = 'index.html'; // Redirect on success
+            window.location.href = 'index.html'; 
         } else {
             const errorText = await response.text();
-            alert("Error: " + errorText);
+            alert("Login Failed: " + errorText);
         }
     } catch (error) {
         console.error("Connection failed:", error);
-        alert("Could not connect to the Java server.");
+        alert("Unable to reach the server. Make sure your Java backend is running on port 8081.");
+    } finally {
+        // Reset button state
+        submitBtn.innerText = originalBtnText;
+        submitBtn.disabled = false;
     }
 });
 </script>
