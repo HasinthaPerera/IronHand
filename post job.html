@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Post a Job — IronHand</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root { --bg: #05070a; --surface: #0c0f16; --border: rgba(255,255,255,0.08); --accent: #ffcc33; --text: #f0f2f5; --muted: #8a91ad; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 100px 6vw; }
+  
+  nav { position: fixed; top: 0; left: 0; right: 0; padding: 18px 6vw; background: rgba(5,7,10,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+  .logo { font-family: 'Syne'; font-weight: 800; font-size: 1.5rem; text-decoration: none; color: white; }
+  .logo span { color: var(--accent); }
+
+  .form-container { max-width: 700px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
+  h1 { font-family: 'Syne'; margin-bottom: 30px; }
+  
+  .input-group { margin-bottom: 20px; }
+  label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 0.9rem; }
+  input, textarea, select { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; }
+  input:focus, textarea:focus { border-color: var(--accent); }
+  
+  .submit-btn { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 8px; font-family: 'Syne'; font-weight: 800; cursor: pointer; transition: 0.3s; }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(245,200,66,0.2); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Iron<span>Hand</span></a>
+  <a href="index.html" style="color: var(--muted); text-decoration: none;">← Back to Home</a>
+</nav>
+
+<div class="form-container">
+  <h1>Post a <span>New Job</span></h1>
+  <form id="jobForm">
+    <div class="input-group">
+      <label>Job Title</label>
+      <input type="text" id="title" placeholder="e.g. Need Kitchen Sink Repair" required>
+    </div>
+    <div class="input-group">
+      <label>Category</label>
+      <select id="category">
+        <option value="Plumbing">Plumbing</option>
+        <option value="Electrical">Electrical</option>
+        <option value="Construction">Construction</option>
+        <option value="Cleaning">Cleaning</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>Description</label>
+      <textarea id="description" rows="4" placeholder="Describe the work in detail..."></textarea>
+    </div>
+    <div class="input-group">
+      <label>Budget ($)</label>
+      <input type="number" id="budget" placeholder="100.00">
+    </div>
+    <button type="submit" class="submit-btn">Publish Job Listing</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('jobForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const jobData = {
+      title: document.getElementById('title').value,
+      category: document.getElementById('category').value,
+      description: document.getElementById('description').value,
+      budget: document.getElementById('budget').value,
+      postedBy: "logged-in-user@example.com" 
+    };
+
+    try {
+      const response = await fetch('http://localhost:8081/api/jobs/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jobData)
+      });
+
+      if (response.ok) {
+        alert("Success! Your job is now live.");
+        window.location.href = 'index.html';
+      }
+    } catch (error) {
+      alert("Error: Ensure your Java backend is running on 8081.");
+    }
+  });
+</script>
+</body>
+</html>
