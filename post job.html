@@ -54,6 +54,10 @@
     <div class="input-group">
       <label>Budget ($)</label>
       <input type="number" id="budget" placeholder="100.00">
+      <div class="input-group">
+  <label>Location</label>
+  <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka">
+</div>
     </div>
     <button type="submit" class="submit-btn">Publish Job Listing</button>
   </form>
@@ -64,12 +68,13 @@
     e.preventDefault();
     
     const jobData = {
-      title: document.getElementById('title').value,
-      category: document.getElementById('category').value,
-      description: document.getElementById('description').value,
-      budget: document.getElementById('budget').value,
-      postedBy: "logged-in-user@example.com" 
-    };
+  title: document.getElementById('title').value,
+  category: document.getElementById('category').value,
+  description: document.getElementById('description').value,
+  budget: document.getElementById('budget').value,
+  location: document.getElementById('location').value, // Added location
+  postedBy: "logged-in-user@example.com" 
+};
 
     try {
       const response = await fetch('http://localhost:8081/api/jobs/post', {

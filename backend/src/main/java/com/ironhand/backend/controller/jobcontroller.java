@@ -15,8 +15,11 @@ public class jobcontroller {
     private jobrepository jobRepository;
 
     @PostMapping("/post")
-    public ResponseEntity<?> postJob(@RequestBody job job) {
-        jobRepository.save(job);
+    public ResponseEntity<?> postJob(@RequestBody job jobData) {
+        // This will print the title in your IntelliJ console to prove it's not NULL anymore
+        System.out.println("Received Job: " + jobData.getTitle());
+
+        jobRepository.save(jobData);
         return ResponseEntity.ok("Job posted successfully!");
     }
 }
