@@ -147,7 +147,7 @@
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('http://localhost:8081/api/auth/login', {
+        const response = await fetch('http://localhost:8082/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -164,7 +164,7 @@
         }
     } catch (error) {
         console.error("Connection failed:", error);
-        alert("Unable to reach the server. Make sure your Java backend is running on port 8081.");
+        alert("Unable to reach the server. Make sure your Java backend is running on port 8082.");
     } finally {
         // Reset button state
         submitBtn.innerText = originalBtnText;

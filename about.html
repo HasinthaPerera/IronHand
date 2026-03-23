@@ -19,7 +19,6 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; line-height: 1.6; overflow-x: hidden; }
 
-  
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
@@ -32,24 +31,32 @@
   nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
   nav ul a:hover { color: var(--accent); }
 
-  /* ── ANIMATED BACKGROUND ── */
   .bg-glow {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 204, 51, 0.03) 0%, transparent 50%);
     pointer-events: none; z-index: -1;
   }
 
-  /* ── CONTENT ENHANCEMENTS ── */
-  .about-hero {
-    padding: 200px 6vw 100px; text-align: center;
-  }
+  .about-hero { padding: 200px 6vw 100px; text-align: center; }
   h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 8vw, 5rem); font-weight: 800; letter-spacing: -3px; line-height: 1; }
   h1 span { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
 
   .grid-layout {
     display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px;
-    max-width: 1100px; margin: 0 auto; padding: 100px 6vw;
+    max-width: 1100px; margin: 0 auto; padding: 60px 6vw;
   }
+
+  /* ── STATISTICS SECTION ── */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 1100px; margin: 0 auto; padding: 40px 6vw; text-align: center;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 30px; border-radius: 20px;
+  }
+  .stat-card h4 { font-family: 'Syne'; font-size: 2.5rem; color: var(--accent); margin-bottom: 5px; }
+  .stat-card p { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
   .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .reveal.active { opacity: 1; transform: translateY(0); }
@@ -70,7 +77,10 @@
     font-weight: 600; color: var(--accent);
   }
 
-  @media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) { 
+    .grid-layout { grid-template-columns: 1fr; } 
+    .stats-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -90,9 +100,24 @@
   <h1 class="reveal">We Build <span>Bridges</span><br>Not Just Apps.</h1>
 </section>
 
+<div class="stats-grid">
+  <div class="stat-card reveal">
+    <h4 class="counter" data-target="24000">0</h4>
+    <p>Verified Workers</p>
+  </div>
+  <div class="stat-card reveal">
+    <h4 class="counter" data-target="98">0</h4>
+    <p>Success Rate %</p>
+  </div>
+  <div class="stat-card reveal">
+    <h4 class="counter" data-target="120">0</h4>
+    <p>Cities Covered</p>
+  </div>
+</div>
+
 <div class="grid-layout">
   <div class="reveal">
-    <h2 style="font-family: 'Syne'; font-size: 2rem; margin-bottom: 20px;">The Mision</h2>
+    <h2 style="font-family: 'Syne'; font-size: 2rem; margin-bottom: 20px;">The Mission</h2>
     <p style="color: var(--muted);">To provide a transparent, fast, and secure ecosystem where skill is the only currency that matters. Whether it's an emergency repair or a long-term construction project, we ensure the right hands are on the job.</p>
   </div>
   
@@ -100,13 +125,17 @@
     <h3 style="font-family: 'Syne'; margin-bottom: 15px;">Information Systems Excellence</h3>
     <p>This project is a testament to modern full-stack development. Every interaction—from real-time search to database fetching—is optimized for high-performance Information Systems environments.</p>
     <div class="tech-stack">
-      <span class="tech-tag">Spring Boot</span>
-      <span class="tech-tag">JPA/Hibernate</span>
-      <span class="tech-tag">MySQL</span>
+      <span class="tech-tag">Spring Boot 3.4</span>
+      <span class="tech-tag">Hibernate/JPA</span>
+      <span class="tech-tag">MariaDB/MySQL</span>
       <span class="tech-tag">JavaScript ES6</span>
     </div>
   </div>
 </div>
+
+<footer style="text-align: center; padding: 60px 6vw; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border);">
+  Project developed by <strong>Hasintha Heshan</strong> • Sabaragamuwa University of Sri Lanka
+</footer>
 
 <script>
   // ── MOUSE FOLLOW EFFECT ──
@@ -117,14 +146,40 @@
     document.querySelector('.bg-glow').style.setProperty('--y', `${y}%`);
   });
 
-  // ── REVEAL LOGIC ──
+  // ── REVEAL & COUNTER LOGIC ──
   function reveal() {
     const reveals = document.querySelectorAll('.reveal');
     reveals.forEach(el => {
       const top = el.getBoundingClientRect().top;
-      if (top < window.innerHeight - 50) el.classList.add('active');
+      if (top < window.innerHeight - 50) {
+        el.classList.add('active');
+        // Trigger counter if the card contains one
+        const counter = el.querySelector('.counter');
+        if (counter && !counter.classList.contains('started')) {
+            startCounter(counter);
+        }
+      }
     });
   }
+
+  function startCounter(el) {
+    el.classList.add('started');
+    const target = +el.getAttribute('data-target');
+    const increment = target / 100;
+    let count = 0;
+
+    const updateCount = () => {
+      if (count < target) {
+        count += increment;
+        el.innerText = Math.ceil(count).toLocaleString() + (target === 98 ? '%' : '+');
+        setTimeout(updateCount, 20);
+      } else {
+        el.innerText = target.toLocaleString() + (target === 98 ? '%' : '+');
+      }
+    };
+    updateCount();
+  }
+
   window.addEventListener('scroll', reveal);
   document.addEventListener('DOMContentLoaded', reveal);
 </script>

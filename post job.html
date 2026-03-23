@@ -77,7 +77,7 @@
 };
 
     try {
-      const response = await fetch('http://localhost:8081/api/jobs/post', {
+      const response = await fetch('http://localhost:8082/api/jobs/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jobData)
@@ -88,8 +88,8 @@
         window.location.href = 'index.html';
       }
     } catch (error) {
-      alert("Error: Ensure your Java backend is running on 8081.");
-    }
+      alert("Error: Ensure your Java backend is running on 8082.");
+    }`
   });
 </script>
 </body>

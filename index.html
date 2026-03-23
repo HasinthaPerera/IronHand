@@ -109,7 +109,7 @@
 </section>
 
 <script>
-  const API_URL = 'http://localhost:8081/api/workers';
+  const API_URL = 'http://localhost:8082/api/workers';
   let allWorkers = [];
 
   // ── REVEAL LOGIC ──
@@ -129,7 +129,7 @@
       allWorkers = await response.json();
       render(allWorkers);
     } catch (err) {
-      container.innerHTML = `<p style="color:var(--accent)">Connection Error: Ensure IntelliJ is running on 8081!</p>`;
+      container.innerHTML = `<p style="color:var(--accent)">Connection Error: Ensure IntelliJ is running on 8082!</p>`;
     }
   }
 
