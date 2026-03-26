@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IronHand — Find Skilled Workers, Fast</title>
+<title>IronHand — Professional Workforce Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -18,27 +18,39 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; line-height: 1.6; }
 
   /* ── ANIMATIONS ── */
   .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
   .reveal.active { opacity: 1; transform: translateY(0); }
 
-  /* ── NAV BAR  ── */
+  /* ── DYNAMIC NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 6vw;
+    padding: 20px 6vw;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
     background: rgba(5, 7, 10, 0.85);
     backdrop-filter: blur(20px);
+    padding: 15px 6vw;
     border-bottom: 1px solid var(--border);
   }
-  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text); text-decoration: none; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text); text-decoration: none; }
   .logo span { color: var(--accent); }
-  nav ul { list-style: none; display: flex; gap: 2rem; }
-  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  nav ul { list-style: none; display: flex; gap: 2rem; align-items: center; }
+  nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; font-weight: 500; }
   nav ul a:hover { color: var(--accent); }
-  .nav-cta { background: var(--accent); color: #000; font-weight: 700; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; }
+  
+  .nav-btn-group { display: flex; gap: 12px; align-items: center; }
+  .nav-cta { 
+    background: var(--accent); color: #000; font-weight: 700; 
+    padding: 10px 22px; border-radius: 8px; text-decoration: none; 
+    font-size: 0.85rem; transition: 0.3s;
+  }
+  .nav-cta.secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 204, 51, 0.2); }
 
   /* ── HERO ── */
   .hero {
@@ -46,108 +58,159 @@
     text-align: center; padding: 120px 6vw 80px;
     background: radial-gradient(circle at 50% 50%, rgba(255, 204, 51, 0.04) 0%, transparent 70%);
   }
-  h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 1rem; }
-  h1 em { font-style: normal; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-  .hero-sub { color: var(--muted); max-width: 560px; line-height: 1.7; margin-bottom: 2.5rem; }
+  h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; letter-spacing: -3px; line-height: 0.95; }
+  h1 em { font-style: normal; color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+  .hero-sub { color: var(--muted); max-width: 580px; font-size: 1.1rem; margin: 1.5rem 0 3rem; }
 
   .hero-search {
-    display: flex; width: 100%; max-width: 580px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    display: flex; width: 100%; max-width: 620px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
   }
-  .hero-search:focus-within { border-color: var(--accent); box-shadow: 0 0 15px rgba(255, 204, 51, 0.1); }
-  .hero-search input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 18px; }
-  .hero-search button { background: var(--accent); border: none; padding: 0 28px; font-weight: 700; cursor: pointer; font-family: 'Syne'; }
+  .hero-search input { flex: 1; background: transparent; border: none; outline: none; color: #fff; padding: 22px; font-size: 1rem; }
+  .hero-search button { background: var(--accent); border: none; padding: 0 35px; font-weight: 800; cursor: pointer; font-family: 'Syne'; transition: 0.3s; }
+  .hero-search button:hover { background: #e8b92e; }
 
-  /* ── WORKER GRID ── */
-  .section { padding: 100px 6vw; }
-  .workers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-  .worker-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+  /* ── GRID STYLING ── */
+  .section-title { font-family: 'Syne'; font-size: 2.5rem; margin-bottom: 2.5rem; letter-spacing: -1px; }
+  .section-title span { color: var(--accent); }
+  
+  .workers-grid, .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+  
+  .worker-card, .job-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 28px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative; overflow: hidden;
   }
-  .worker-card:hover { border-color: var(--accent); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+  .worker-card:hover, .job-card:hover { border-color: var(--accent); transform: translateY(-10px); }
 
-  .worker-avatar { width: 52px; height: 52px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid var(--border); margin-bottom: 15px; }
-  .worker-role { color: var(--accent); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
-  .worker-rate { font-family: 'Syne'; font-weight: 800; font-size: 1.2rem; margin-top: 15px; }
+  .worker-avatar { width: 56px; height: 56px; background: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; border: 1px solid var(--border); margin-bottom: 18px; }
+  .worker-role { color: var(--accent); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; }
+  .worker-rate { font-family: 'Syne'; font-weight: 800; font-size: 1.3rem; margin-top: 20px; }
+  
   .hire-btn {
-    width: 100%; margin-top: 15px; padding: 12px; border-radius: 8px; background: transparent;
-    border: 1px solid var(--accent); color: var(--accent); font-weight: 700; cursor: pointer; transition: 0.3s;
+    width: 100%; margin-top: 20px; padding: 14px; border-radius: 10px; background: transparent;
+    border: 1px solid var(--accent); color: var(--accent); font-weight: 800; cursor: pointer; transition: 0.3s; font-family: 'Syne';
   }
   .hire-btn:hover { background: var(--accent); color: #000; }
+
+  /* ── JOB SPECIFIC ── */
+  .jobs-section { background: var(--surface); border-top: 1px solid var(--border); }
+  .job-badge { background: rgba(255, 204, 51, 0.1); color: var(--accent); padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
 </style>
 </head>
 <body>
 
-<nav>
+<nav id="navbar">
   <a href="#" class="logo">Iron<span>Hand</span></a>
   <ul>
     <li><a href="#workers">Find Workers</a></li>
-    <li><a href="#">Services</a></li>
-    <li><a href="post job.html" >Post a Job</a></li>
+    <li><a href="#jobs">Browse Jobs</a></li>
+    <li><a href="about.html">About Us</a></li>
   </ul>
-  <a href="login.html" class="nav-cta">Get Started →</a>
-  <a href="about.html" class="nav-cta" >About Us</a>
+  <div class="nav-btn-group">
+    <a href="post job.html" class="nav-cta secondary">Post a Job</a>
+    <a href="login.html" class="nav-cta">Get Started</a>
+  </div>
 </nav>
 
 <section class="hero">
   <div class="reveal">
-    <h1>Hire <em>Skilled Workers</em><br>In Hours, Not Days</h1>
-    <p class="hero-sub">Connect with verified laborers and tradespeople ready to work — on demand or long-term.</p>
+    <h1>Hire <em>Experts</em><br>Faster than Ever</h1>
+    <p class="hero-sub">The premium marketplace connecting Sabaragamuwa's finest tradespeople with those who need them most.</p>
     <div class="hero-search">
-      <input type="text" id="searchInput" placeholder="Search by role (e.g. Plumber)..." />
-      <button>Find Workers</button>
+      <input type="text" id="searchInput" placeholder="What skill are you looking for?" />
+      <button>Search</button>
     </div>
   </div>
 </section>
 
 <section class="section" id="workers">
-  <h2 class="reveal" style="font-family: 'Syne'; margin-bottom: 2rem;">Top Rated Professionals</h2>
+  <h2 class="section-title reveal">Top Rated <span>Professionals</span></h2>
   <div class="workers-grid" id="workerContainer">
     </div>
 </section>
 
+<section class="section jobs-section" id="jobs">
+  <h2 class="section-title reveal">Active <span>Job Listings</span></h2>
+  <div class="jobs-grid" id="jobContainer">
+    </div>
+</section>
+
 <script>
-  const API_URL = 'http://localhost:8082/api/workers';
+  const WORKERS_API = 'http://localhost:8082/api/workers';
+  const JOBS_API = 'http://localhost:8082/api/jobs/all'; 
+  
   let allWorkers = [];
+
+  // ── NAV SCROLL EFFECT ──
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 50) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  });
 
   // ── REVEAL LOGIC ──
   function reveal() {
-    const items = document.querySelectorAll('.reveal, .worker-card');
+    const items = document.querySelectorAll('.reveal, .worker-card, .job-card');
     items.forEach(item => {
       const top = item.getBoundingClientRect().top;
-      if (top < window.innerHeight - 50) item.classList.add('active');
+      if (top < window.innerHeight - 80) item.classList.add('active');
     });
   }
 
-  // ── BACKEND SYNC ──
+  // ── DATA FETCHING ──
   async function syncData() {
-    const container = document.getElementById('workerContainer');
+    const workerContainer = document.getElementById('workerContainer');
+    const jobContainer = document.getElementById('jobContainer');
+
+    // Fetch Workers
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(WORKERS_API);
       allWorkers = await response.json();
-      render(allWorkers);
+      renderWorkers(allWorkers);
     } catch (err) {
-      container.innerHTML = `<p style="color:var(--accent)">Connection Error: Ensure IntelliJ is running on 8082!</p>`;
+      workerContainer.innerHTML = `<p style="color:var(--accent)">Connection Error: Check IntelliJ Port 8082</p>`;
+    }
+
+    // Fetch Jobs 
+    try {
+      const response = await fetch('http://localhost:8082/api/jobs/all');
+      if(response.ok) {
+          const jobs = await response.json();
+          renderJobs(jobs);
+      }
+    } catch (err) {
+      jobContainer.innerHTML = `<p style="color:var(--muted)">Run the 'Post a Job' logic to see listings here.</p>`;
     }
   }
 
-  function render(data) {
+  function renderWorkers(data) {
     const container = document.getElementById('workerContainer');
     container.innerHTML = data.map(w => `
       <div class="worker-card reveal">
-        <div class="worker-top">
-          <div class="worker-avatar">${w.icon || '👷'}</div>
-          <div class="worker-role">${w.role}</div>
-          <h3 style="margin: 5px 0;">${w.name}</h3>
-          <p style="font-size: 0.85rem; color: var(--muted);">${w.bio}</p>
-          <div class="worker-rate">$${w.rate}<span>/hr</span></div>
-          <button class="hire-btn">Hire Now</button>
-        </div>
+        <div class="worker-role">${w.role}</div>
+        <div class="worker-avatar">${w.icon || '👷'}</div>
+        <h3 style="font-family: 'Syne'; margin: 10px 0;">${w.name}</h3>
+        <p style="font-size: 0.85rem; color: var(--muted); height: 45px; overflow: hidden;">${w.bio}</p>
+        <div class="worker-rate">$${w.rate}<span>/hr</span></div>
+        <button class="hire-btn">Hire Now</button>
       </div>
     `).join('');
-    setTimeout(reveal, 100);
+    setTimeout(reveal, 150);
+  }
+
+  function renderJobs(data) {
+    const container = document.getElementById('jobContainer');
+    container.innerHTML = data.map(j => `
+      <div class="job-card reveal">
+        <span class="job-badge">${j.category}</span>
+        <h3 style="font-family: 'Syne'; margin: 15px 0 10px;">${j.title}</h3>
+        <p style="font-size: 0.85rem; color: var(--muted);">${j.description}</p>
+        <div style="margin-top: 20px; font-weight: 800; color: var(--accent);">Budget: $${j.budget}</div>
+      </div>
+    `).join('');
+    reveal();
   }
 
   // ── LIVE SEARCH ──
@@ -156,7 +219,7 @@
     const filtered = allWorkers.filter(w => 
       w.role.toLowerCase().includes(term) || w.name.toLowerCase().includes(term)
     );
-    render(filtered);
+    renderWorkers(filtered);
   });
 
   window.addEventListener('scroll', reveal);
