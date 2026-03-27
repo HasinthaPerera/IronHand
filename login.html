@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Login — IronHand</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 <style>
   :root {
     --bg: #05070a;
@@ -13,6 +15,7 @@
     --accent: #ffcc33;
     --text: #f0f2f5;
     --muted: #8a91ad;
+    --error: #ff4d4d;
   }
 
   body { 
@@ -24,127 +27,149 @@
     align-items: center; 
     height: 100vh; 
     margin: 0;
-    /* Subtle background glow */
     background: radial-gradient(circle at center, #10141d 0%, var(--bg) 100%);
+    overflow: hidden;
   }
 
   .login-card {
     background: var(--surface);
     padding: 40px;
-    border-radius: 24px;
+    border-radius: 28px;
     border: 1px solid var(--border);
     width: 90%;
-    max-width: 400px;
+    max-width: 420px;
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    animation: float 6s ease-in-out infinite;
   }
 
-  h2 { font-family: 'Syne'; font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -1px; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  h2 { font-family: 'Syne'; font-size: 2.5rem; margin-bottom: 8px; letter-spacing: -1.5px; }
   h2 span { color: var(--accent); }
   .subtitle { color: var(--muted); margin-bottom: 32px; font-size: 0.95rem; }
   
-  .input-group { text-align: left; margin-bottom: 20px; }
-  label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--muted); font-weight: 500; }
+  .input-group { text-align: left; margin-bottom: 22px; position: relative; }
+  label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--muted); font-weight: 600; }
   
   input {
     width: 100%;
-    padding: 14px 16px;
-    background: rgba(255,255,255,0.03);
+    padding: 15px 18px;
+    background: rgba(255,255,255,0.02);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 14px;
     color: white;
     outline: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
   }
   
   input:focus { 
     border-color: var(--accent); 
     background: rgba(255,255,255,0.05);
-    box-shadow: 0 0 0 4px rgba(255, 204, 51, 0.1);
+    box-shadow: 0 0 0 4px rgba(255, 204, 51, 0.15);
   }
+
+  /* Password Toggle Positioning */
+  .toggle-password {
+    position: absolute;
+    right: 18px;
+    top: 42px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .toggle-password:hover { color: var(--accent); }
   
   .login-btn {
     width: 100%;
-    padding: 16px;
+    padding: 18px;
     background: var(--accent);
     color: #000;
     border: none;
-    border-radius: 12px;
-    font-weight: 700;
+    border-radius: 14px;
+    font-weight: 800;
     cursor: pointer;
     font-family: 'Syne';
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    margin-top: 10px;
+    font-size: 1.05rem;
+    transition: all 0.4s;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
   }
 
   .login-btn:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 10px 20px rgba(245,200,66,0.2); 
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(245,200,66,0.25); 
     background: #f7d46c;
   }
 
-  .login-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .signup-link {
-    margin-top: 24px;
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-
-  .signup-link a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .signup-link a:hover {
-    text-decoration: underline;
-  }
+  .signup-link { margin-top: 28px; font-size: 0.9rem; color: var(--muted); }
+  .signup-link a { color: var(--accent); text-decoration: none; font-weight: 700; border-bottom: 1px solid transparent; transition: 0.3s; }
+  .signup-link a:hover { border-bottom-color: var(--accent); }
 </style>
 </head>
 <body>
 
 <div class="login-card">
   <h2>Iron<span>Hand</span></h2>
-  <p class="subtitle">Welcome back! Please login to your account.</p>
+  <p class="subtitle">Secure authentication for the IronHand network.</p>
   
   <form id="loginForm">
     <div class="input-group">
       <label for="email">Email Address</label>
-      <input type="email" id="email" required placeholder="name@example.com">
+      <input type="email" id="email" required placeholder="hasintha@example.com">
     </div>
+    
     <div class="input-group">
       <label for="password">Password</label>
       <input type="password" id="password" required placeholder="••••••••">
+      <i class="fa-solid fa-eye toggle-password" id="eyeIcon"></i>
     </div>
-    <button type="submit" id="submitBtn" class="login-btn">Sign In</button>
+
+    <button type="submit" id="submitBtn" class="login-btn">
+      <span>Sign In</span>
+      <i class="fa-solid fa-arrow-right-to-bracket"></i>
+    </button>
   </form>
 
   <div class="signup-link">
-    Don't have an account? <a href="register.html">Sign up</a>
+    New to IronHand? <a href="register.html">Create an account</a>
   </div>
 </div>
 
 <script>
   const loginForm = document.getElementById('loginForm');
   const submitBtn = document.getElementById('submitBtn');
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
 
+  // ── PASSWORD VISIBILITY TOGGLE ──
+  eyeIcon.addEventListener('click', () => {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    eyeIcon.classList.toggle('fa-eye');
+    eyeIcon.classList.toggle('fa-eye-slash');
+  });
+
+  // ── AUTHENTICATION LOGIC ──
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // UI Feedback: Loading state
-    const originalBtnText = submitBtn.innerText;
-    submitBtn.innerText = "Authenticating...";
+    const originalBtnContent = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
     submitBtn.disabled = true;
 
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = passwordInput.value;
 
     try {
         const response = await fetch('http://localhost:8082/api/auth/login', {
@@ -154,20 +179,22 @@
         });
 
         if (response.ok) {
-            // Success! Store a small flag in localStorage to know the user is logged in
+            // Store User Session Details
             localStorage.setItem('isLoggedIn', 'true');
-            alert("Success! Redirecting to Home...");
+            localStorage.setItem('userEmail', email); 
+            
+            // Minimalist Toast/Alert
+            alert("Welcome back! Redirecting...");
             window.location.href = 'index.html'; 
         } else {
             const errorText = await response.text();
-            alert("Login Failed: " + errorText);
+            alert("Auth Error: " + errorText);
         }
     } catch (error) {
-        console.error("Connection failed:", error);
-        alert("Unable to reach the server. Make sure your Java backend is running on port 8082.");
+        console.error("Link failure:", error);
+        alert("Server Offline: Ensure your Java app is running on Port 8082.");
     } finally {
-        // Reset button state
-        submitBtn.innerText = originalBtnText;
+        submitBtn.innerHTML = originalBtnContent;
         submitBtn.disabled = false;
     }
 });
