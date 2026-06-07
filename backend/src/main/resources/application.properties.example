@@ -1,16 +1,16 @@
+# Spring Boot Application Port
 server.port=8082
 spring.application.name=backend
-# 1. Database Connection
-spring.datasource.url=jdbc:mysql://localhost:3306/ironhand
-spring.datasource.username=root
-spring.datasource.password=
 
-# 2. The Driver (Ensure this is correct)
+# 1. Database Connection (Replace with your own local database credentials)
+spring.datasource.url=jdbc:mysql://localhost:3306/ironhand
+spring.datasource.username=YOUR_DB_USERNAME
+spring.datasource.password=YOUR_DB_PASSWORD
+
+# 2. JDBC Driver Configuration
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-# 3. DO NOT manually set the dialect.
-# If you MUST, use the modern generic one below.
-# If this still fails, delete the line below entirely.
+# 3. Hibernate Database Platform
 spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 # 4. Hibernate Behavior

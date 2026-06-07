@@ -1,0 +1,17 @@
+# IDE / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Spring Boot Build Targets
+backend/target/
+backend/out/
+
+# Local configuration / database credentials (secret key files)
+backend/src/main/resources/application.properties
