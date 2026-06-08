@@ -4,18 +4,25 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Login — IronHand</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
   :root {
-    --bg: #05070a;
-    --surface: #0c0f16;
+    --bg: #030508;
+    --surface: rgba(12, 15, 22, 0.6);
     --border: rgba(255, 255, 255, 0.08);
     --accent: #ffcc33;
+    --accent-glow: rgba(255, 204, 51, 0.25);
     --text: #f0f2f5;
     --muted: #8a91ad;
     --error: #ff4d4d;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
   body { 
@@ -25,66 +32,258 @@
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    height: 100vh; 
+    min-height: 100vh; 
     margin: 0;
+    padding: 40px 20px;
     background: radial-gradient(circle at center, #10141d 0%, var(--bg) 100%);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
   }
 
+  /* ── BACKGROUND GLOW EFFECT ── */
+  .bg-glow {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 204, 51, 0.05) 0%, transparent 60%);
+    pointer-events: none; z-index: -1;
+  }
+  .ambient-blur {
+    position: fixed; width: 450px; height: 450px; border-radius: 50%;
+    filter: blur(160px); opacity: 0.12; pointer-events: none; z-index: -1;
+    animation: float-slow 25s infinite alternate;
+  }
+  .blur-1 { background: #ffcc33; top: -15%; left: -15%; }
+  .blur-2 { background: #00e5ff; bottom: -15%; right: -15%; animation-delay: -7s; }
+  
+  @keyframes float-slow {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(120px, 90px) scale(1.25); }
+  }
+
+  /* ── BACK TO HOME BUTTON ── */
+  .back-home-btn {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  
+  .back-home-btn:hover {
+    color: #fff;
+    border-color: var(--accent);
+    background: rgba(255, 204, 51, 0.05);
+    transform: translateX(-4px);
+  }
+
+  /* ── LOGIN CARD ── */
   .login-card {
     background: var(--surface);
     padding: 40px;
     border-radius: 28px;
     border: 1px solid var(--border);
-    width: 90%;
-    max-width: 420px;
+    width: 100%;
+    max-width: 440px;
     text-align: center;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
-    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: entrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards, float 8s ease-in-out infinite 1s;
+    opacity: 0;
+    transform: translateY(20px);
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes entrance {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
   }
 
-  h2 { font-family: 'Syne'; font-size: 2.5rem; margin-bottom: 8px; letter-spacing: -1.5px; }
-  h2 span { color: var(--accent); }
-  .subtitle { color: var(--muted); margin-bottom: 32px; font-size: 0.95rem; }
+  h2 { 
+    font-family: 'Syne'; 
+    font-size: 2.6rem; 
+    margin-bottom: 8px; 
+    letter-spacing: -1.5px; 
+    font-weight: 800;
+  }
+  h2 span { 
+    color: var(--accent); 
+    text-shadow: 0 0 30px var(--accent-glow);
+  }
   
-  .input-group { text-align: left; margin-bottom: 22px; position: relative; }
-  label { display: block; font-size: 0.85rem; margin-bottom: 8px; color: var(--muted); font-weight: 600; }
+  .subtitle { 
+    color: var(--muted); 
+    margin-bottom: 36px; 
+    font-size: 0.95rem; 
+    line-height: 1.5;
+  }
   
-  input {
+  /* ── INPUT FIELDS ── */
+  .input-group { 
+    text-align: left; 
+    margin-bottom: 24px; 
+  }
+  
+  label { 
+    display: block; 
+    font-size: 0.85rem; 
+    margin-bottom: 8px; 
+    color: var(--muted); 
+    font-weight: 600; 
+    letter-spacing: 0.5px;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-wrapper input {
     width: 100%;
-    padding: 15px 18px;
-    background: rgba(255,255,255,0.02);
+    padding: 16px 18px 16px 48px;
+    background: rgba(255, 255, 255, 0.015);
     border: 1px solid var(--border);
     border-radius: 14px;
     color: white;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 1rem;
+    font-family: 'DM Sans', sans-serif;
   }
   
-  input:focus { 
+  .input-wrapper input:focus { 
     border-color: var(--accent); 
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.04);
     box-shadow: 0 0 0 4px rgba(255, 204, 51, 0.15);
   }
 
-  /* Password Toggle Positioning */
+  .field-icon {
+    position: absolute;
+    left: 18px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+
+  .input-wrapper input:focus ~ .field-icon {
+    color: var(--accent);
+  }
+
+  /* Password Toggle Button */
   .toggle-password {
     position: absolute;
     right: 18px;
-    top: 42px;
     color: var(--muted);
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s;
+    font-size: 1.05rem;
+    z-index: 5;
+    padding: 5px;
   }
-  .toggle-password:hover { color: var(--accent); }
+  .toggle-password:hover { 
+    color: var(--accent); 
+  }
   
+  /* ── FORM ACTIONS ROW ── */
+  .form-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    font-size: 0.88rem;
+  }
+
+  .remember-me-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    user-select: none;
+    margin-bottom: 0;
+    font-weight: 500;
+  }
+
+  .remember-me-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: inline-block;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .remember-me-label:hover input ~ .custom-checkbox {
+    border-color: rgba(255, 204, 51, 0.5);
+  }
+
+  .remember-me-label input:checked ~ .custom-checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .custom-checkbox::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 9px;
+    border: solid #000;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .remember-me-label input:checked ~ .custom-checkbox::after {
+    display: block;
+  }
+
+  .forgot-pw-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  .forgot-pw-link:hover {
+    color: var(--accent);
+  }
+
+  /* ── SIGN IN BUTTON ── */
   .login-btn {
     width: 100%;
     padding: 18px;
@@ -96,28 +295,222 @@
     cursor: pointer;
     font-family: 'Syne';
     font-size: 1.05rem;
-    transition: all 0.4s;
-    margin-top: 15px;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    position: relative;
+    overflow: hidden;
   }
 
   .login-btn:hover { 
-    transform: scale(1.02);
-    box-shadow: 0 15px 30px rgba(245,200,66,0.25); 
-    background: #f7d46c;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(255, 204, 51, 0.25); 
+    background: #ffd659;
   }
 
-  .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-btn:active {
+    transform: translateY(0);
+  }
 
-  .signup-link { margin-top: 28px; font-size: 0.9rem; color: var(--muted); }
-  .signup-link a { color: var(--accent); text-decoration: none; font-weight: 700; border-bottom: 1px solid transparent; transition: 0.3s; }
-  .signup-link a:hover { border-bottom-color: var(--accent); }
+  .login-btn:disabled { 
+    opacity: 0.6; 
+    cursor: not-allowed; 
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* ── SIGNUP & DIVIDER ── */
+  .signup-link { 
+    margin-top: 28px; 
+    font-size: 0.92rem; 
+    color: var(--muted); 
+  }
+  .signup-link a { 
+    color: var(--accent); 
+    text-decoration: none; 
+    font-weight: 700; 
+    border-bottom: 1px solid transparent; 
+    transition: all 0.3s; 
+  }
+  .signup-link a:hover { 
+    border-bottom-color: var(--accent); 
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.15);
+    margin: 28px 0 24px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .divider span {
+    padding: 0 12px;
+  }
+
+  /* ── SOCIAL LOGINS ── */
+  .social-login-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .social-btn:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
+  }
+
+  .google-btn:hover {
+    border-color: #4285F4;
+    box-shadow: 0 8px 20px rgba(66, 133, 244, 0.12);
+  }
+
+  .github-btn:hover {
+    border-color: #fff;
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.08);
+  }
+
+  /* ── TOAST NOTIFICATIONS ── */
+  .toast-container {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(12, 15, 22, 0.92);
+    border: 1px solid var(--border);
+    padding: 16px 22px;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 500;
+    min-width: 320px;
+    max-width: 450px;
+    pointer-events: auto;
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .toast.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .toast-success {
+    border-left: 4px solid #00ff88;
+    box-shadow: 0 20px 40px rgba(0, 255, 136, 0.04);
+  }
+
+  .toast-error {
+    border-left: 4px solid var(--error);
+    box-shadow: 0 20px 40px rgba(255, 77, 77, 0.04);
+  }
+
+  .toast-info {
+    border-left: 4px solid #00e5ff;
+    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.04);
+  }
+
+  .toast-icon {
+    font-size: 1.25rem;
+  }
+
+  .toast-success .toast-icon { color: #00ff88; }
+  .toast-error .toast-icon { color: var(--error); }
+  .toast-info .toast-icon { color: #00e5ff; }
+
+  .toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+
+  .toast-close:hover {
+    color: #fff;
+  }
+
+  /* Mobile responsiveness Adjustments */
+  @media (max-width: 580px) {
+    .back-home-btn {
+      position: relative;
+      top: 0;
+      left: 0;
+      margin-bottom: 25px;
+      align-self: flex-start;
+    }
+    body {
+      flex-direction: column;
+      padding: 30px 16px;
+      justify-content: flex-start;
+    }
+    .login-card {
+      padding: 32px 24px;
+    }
+  }
 </style>
 </head>
 <body>
+
+<!-- Ambient Glow Layer -->
+<div class="bg-glow" id="bgGlow"></div>
+<div class="ambient-blur blur-1"></div>
+<div class="ambient-blur blur-2"></div>
+
+<!-- Back to Home Link -->
+<a href="index.html" class="back-home-btn">
+  <i class="fa-solid fa-arrow-left"></i>
+  <span>Back to Home</span>
+</a>
 
 <div class="login-card">
   <h2>Iron<span>Hand</span></h2>
@@ -126,13 +519,28 @@
   <form id="loginForm">
     <div class="input-group">
       <label for="email">Email Address</label>
-      <input type="email" id="email" required placeholder="hasintha@example.com">
+      <div class="input-wrapper">
+        <i class="fa-solid fa-envelope field-icon"></i>
+        <input type="email" id="email" required placeholder="hasintha@example.com" autofocus autocomplete="email">
+      </div>
     </div>
     
     <div class="input-group">
       <label for="password">Password</label>
-      <input type="password" id="password" required placeholder="••••••••">
-      <i class="fa-solid fa-eye toggle-password" id="eyeIcon"></i>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-lock field-icon"></i>
+        <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+        <i class="fa-solid fa-eye toggle-password" id="eyeIcon"></i>
+      </div>
+    </div>
+
+    <div class="form-actions-row">
+      <label class="remember-me-label">
+        <input type="checkbox" id="rememberMe">
+        <span class="custom-checkbox"></span>
+        <span class="remember-text">Remember me</span>
+      </label>
+      <a href="#" class="forgot-pw-link" id="forgotPasswordBtn">Forgot Password?</a>
     </div>
 
     <button type="submit" id="submitBtn" class="login-btn">
@@ -141,16 +549,46 @@
     </button>
   </form>
 
+  <div class="divider">
+    <span>or sign in with</span>
+  </div>
+
+  <div class="social-login-grid">
+    <button type="button" class="social-btn google-btn" id="googleLoginBtn">
+      <i class="fa-brands fa-google"></i>
+      <span>Google</span>
+    </button>
+    <button type="button" class="social-btn github-btn" id="githubLoginBtn">
+      <i class="fa-brands fa-github"></i>
+      <span>GitHub</span>
+    </button>
+  </div>
+
   <div class="signup-link">
     New to IronHand? <a href="register.html">Create an account</a>
   </div>
 </div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 
 <script>
   const loginForm = document.getElementById('loginForm');
   const submitBtn = document.getElementById('submitBtn');
   const passwordInput = document.getElementById('password');
   const eyeIcon = document.getElementById('eyeIcon');
+  const emailInput = document.getElementById('email');
+
+  // ── MOUSE FOLLOW GLOW EFFECT ──
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    const bgGlow = document.getElementById('bgGlow');
+    if (bgGlow) {
+      bgGlow.style.setProperty('--x', `${x}%`);
+      bgGlow.style.setProperty('--y', `${y}%`);
+    }
+  });
 
   // ── PASSWORD VISIBILITY TOGGLE ──
   eyeIcon.addEventListener('click', () => {
@@ -158,6 +596,78 @@
     passwordInput.setAttribute('type', type);
     eyeIcon.classList.toggle('fa-eye');
     eyeIcon.classList.toggle('fa-eye-slash');
+  });
+
+  // ── TOAST NOTIFICATION UTILITY ──
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let iconClass = 'fa-circle-info';
+    if (type === 'success') iconClass = 'fa-circle-check';
+    if (type === 'error') iconClass = 'fa-circle-exclamation';
+
+    toast.innerHTML = `
+      <i class="fa-solid ${iconClass} toast-icon"></i>
+      <span class="toast-message">${message}</span>
+      <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+    `;
+
+    container.appendChild(toast);
+
+    // Trigger reflow to enable transition
+    toast.offsetHeight;
+
+    // Show toast
+    toast.classList.add('show');
+
+    // Auto dismiss after 4 seconds
+    const autoDismiss = setTimeout(() => {
+      dismissToast(toast);
+    }, 4000);
+
+    // Manual close button
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+      clearTimeout(autoDismiss);
+      dismissToast(toast);
+    });
+  }
+
+  function dismissToast(toast) {
+    toast.classList.remove('show');
+    toast.style.transform = 'translateY(-20px) scale(0.9)';
+    toast.style.opacity = '0';
+    
+    toast.addEventListener('transitionend', () => {
+      toast.remove();
+    });
+  }
+
+  // ── REMEMBER ME AUTOFILL ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (rememberedEmail) {
+      emailInput.value = rememberedEmail;
+      document.getElementById('rememberMe').checked = true;
+      passwordInput.focus();
+    }
+  });
+
+  // ── MOCK/SIMULATION HANDLERS ──
+  document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    showToast("A password recovery link has been sent to your email (simulation).", "info");
+  });
+
+  document.getElementById('googleLoginBtn').addEventListener('click', () => {
+    showToast("Google authentication is not configured in this environment.", "error");
+  });
+
+  document.getElementById('githubLoginBtn').addEventListener('click', () => {
+    showToast("GitHub authentication is not configured in this environment.", "error");
   });
 
   // ── AUTHENTICATION LOGIC ──
@@ -168,8 +678,9 @@
     submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
     submitBtn.disabled = true;
 
-    const email = document.getElementById('email').value;
+    const email = emailInput.value.trim();
     const password = passwordInput.value;
+    const rememberMe = document.getElementById('rememberMe').checked;
 
     try {
         const response = await fetch('http://localhost:8082/api/auth/login', {
@@ -179,25 +690,38 @@
         });
 
         if (response.ok) {
+            // Handle Remember Me
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+
             // Store User Session Details
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', email); 
             
-            // Minimalist Toast/Alert
-            alert("Welcome back! Redirecting...");
-            window.location.href = 'index.html'; 
+            showToast("Welcome back! Redirecting you...", "success");
+            
+            // Redirect after minor delay for the toast to be seen
+            setTimeout(() => {
+                window.location.href = 'index.html'; 
+            }, 1200);
         } else {
             const errorText = await response.text();
-            alert("Auth Error: " + errorText);
+            showToast(errorText || "Invalid credentials. Please try again.", "error");
         }
     } catch (error) {
         console.error("Link failure:", error);
-        alert("Server Offline: Ensure your Java app is running on Port 8082.");
+        showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
     } finally {
-        submitBtn.innerHTML = originalBtnContent;
-        submitBtn.disabled = false;
+        // Wait slightly before enabling button so it doesn't look jumpy
+        setTimeout(() => {
+            submitBtn.innerHTML = originalBtnContent;
+            submitBtn.disabled = false;
+        }, 800);
     }
-});
+  });
 </script>
 
 </body>
