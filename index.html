@@ -294,6 +294,231 @@
   footer {
     text-align: center; padding: 60px 6vw; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); background: #030508;
   }
+
+  /* ── GLOWING GRID BACKDROP ── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: center center;
+    mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SEARCH SHORTCUT BADGE ── */
+  .search-shortcut-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    margin-right: 12px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  @media (max-width: 576px) {
+    .search-shortcut-badge { display: none; }
+  }
+
+  /* ── LIVE STATISTICS PANEL ── */
+  .stats-strip {
+    padding: 0 6vw;
+    margin: -40px auto 40px;
+    max-width: 1100px;
+    position: relative;
+    z-index: 10;
+  }
+  .stats-strip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    background: rgba(12, 15, 22, 0.45);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+  .stat-strip-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .stat-strip-card:last-child {
+    border-right: none;
+  }
+  .stat-strip-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(255, 204, 51, 0.2);
+    margin-bottom: 4px;
+  }
+  .stat-strip-lbl {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+  @media (max-width: 768px) {
+    .stats-strip-grid { grid-template-columns: 1fr; gap: 24px; }
+    .stat-strip-card { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 16px; }
+    .stat-strip-card:last-child { border-bottom: none; padding-bottom: 0; }
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-it-works-section {
+    background: rgba(12, 15, 22, 0.2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 6vw;
+  }
+  .flow-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 45px;
+  }
+  .flow-toggle-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 12px 28px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 14px;
+  }
+  .flow-toggle-btn.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(255, 204, 51, 0.2);
+  }
+  .flow-toggle-btn:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+  }
+  .flow-toggle-btn:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: none;
+  }
+  
+  .timeline-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+  .step-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: transparent; transition: 0.3s;
+  }
+  .step-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-5px);
+  }
+  .step-card:hover::before {
+    background: var(--accent);
+  }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 204, 51, 0.08);
+    border: 1px solid rgba(255, 204, 51, 0.15); display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--accent);
+    margin: 0 auto 20px;
+  }
+  .step-title {
+    font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 12px;
+  }
+  .step-desc {
+    color: var(--muted); font-size: 0.88rem; line-height: 1.6;
+  }
+  @media (max-width: 768px) {
+    .timeline-steps { grid-template-columns: 1fr; gap: 20px; }
+  }
+
+  /* ── WHY IRONHAND ── */
+  .benefits-section {
+    padding: 80px 6vw;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+  }
+  .benefit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 35px;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+  }
+  .benefit-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  }
+  .benefit-icon-box {
+    width: 54px; height: 54px; border-radius: 14px; background: rgba(255, 204, 51, 0.05);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--accent); margin-bottom: 24px; transition: 0.3s;
+  }
+  .benefit-card:hover .benefit-icon-box {
+    background: rgba(255, 204, 51, 0.1);
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+  .benefit-title {
+    font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; margin-bottom: 12px;
+  }
+  .benefit-desc {
+    color: var(--muted); font-size: 0.88rem; line-height: 1.6;
+  }
+  @media (max-width: 768px) {
+    .benefits-grid { grid-template-columns: 1fr; gap: 24px; }
+  }
 </style>
 </head>
 <body>
@@ -326,7 +551,26 @@
     <div class="hero-search-wrapper">
       <i class="fa-solid fa-magnifying-glass hero-search-icon"></i>
       <input type="text" id="searchInput" placeholder="What skill or professional are you looking for?" />
+      <span class="search-shortcut-badge">/</span>
       <button id="searchButton">Search <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- Live Platform Stats -->
+<section class="stats-strip reveal">
+  <div class="stats-strip-grid">
+    <div class="stat-strip-card">
+      <div class="stat-strip-val" id="statPros">0</div>
+      <div class="stat-strip-lbl">Verified Pros</div>
+    </div>
+    <div class="stat-strip-card">
+      <div class="stat-strip-val" id="statJobs">0</div>
+      <div class="stat-strip-lbl">Active Projects</div>
+    </div>
+    <div class="stat-strip-card">
+      <div class="stat-strip-val" id="statValue">$0</div>
+      <div class="stat-strip-lbl">Combined Budget</div>
     </div>
   </div>
 </section>
@@ -352,6 +596,59 @@
   </div>
   <div class="workers-grid" id="workerContainer">
     <!-- Skeleton cards populated by default -->
+  </div>
+</section>
+
+<!-- Interactive How It Works Section -->
+<section class="section how-it-works-section" id="howItWorks">
+  <div class="section-header reveal" style="text-align: center; justify-content: center; flex-direction: column; align-items: center; margin-bottom: 2.5rem;">
+    <h2 class="section-title">How It <span>Works</span></h2>
+    <p class="section-subtitle" style="margin-top: 4px;">Simple, secure, and direct steps to get things done</p>
+  </div>
+  
+  <div class="flow-toggle-wrapper reveal">
+    <button class="flow-toggle-btn active" id="flowEmployerBtn">For Employers</button>
+    <button class="flow-toggle-btn" id="flowWorkerBtn">For Professionals</button>
+  </div>
+  
+  <div class="timeline-steps reveal" id="flowStepsContainer">
+    <!-- Rendered dynamically via javascript -->
+  </div>
+</section>
+
+<!-- Why IronHand Benefits Section -->
+<section class="section benefits-section">
+  <div class="section-header reveal">
+    <div>
+      <h2 class="section-title">Why <span>IronHand?</span></h2>
+      <p class="section-subtitle">A professional-grade workforce marketplace built on trust</p>
+    </div>
+  </div>
+  
+  <div class="benefits-grid">
+    <div class="benefit-card reveal">
+      <div class="benefit-icon-box">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h3 class="benefit-title">Verified Tradespeople</h3>
+      <p class="benefit-desc">Every technician, plumber, and builder goes through manual portfolio validation before receiving active jobs.</p>
+    </div>
+    
+    <div class="benefit-card reveal">
+      <div class="benefit-icon-box">
+        <i class="fa-solid fa-file-invoice-dollar"></i>
+      </div>
+      <h3 class="benefit-title">Budget Transparency</h3>
+      <p class="benefit-desc">Agree on budget expectations or contract scopes beforehand. No hidden platform markups or surprise surcharges.</p>
+    </div>
+    
+    <div class="benefit-card reveal">
+      <div class="benefit-icon-box">
+        <i class="fa-solid fa-comments"></i>
+      </div>
+      <h3 class="benefit-title">Zero Middlemen</h3>
+      <p class="benefit-desc">Chat directly, call directly, or draft terms instantly. We facilitate connections without locked boundaries.</p>
+    </div>
   </div>
 </section>
 
@@ -391,6 +688,84 @@
   // APIs Configuration
   const WORKERS_API = 'http://localhost:8082/api/workers';
   const JOBS_API = 'http://localhost:8082/api/jobs/all'; 
+
+  // ── KEYBOARD SHORTCUT LISTENER ──
+  document.addEventListener('keydown', (e) => {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+      return;
+    }
+    if (e.key === '/') {
+      e.preventDefault();
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
+    }
+  });
+
+  // ── NUMBER COUNT UP ANIMATION ──
+  function animateCounter(elementId, targetVal, prefix = '') {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    
+    let start = 0;
+    const duration = 1200; // ms
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easeProgress = progress * (2 - progress);
+      const currentVal = Math.floor(easeProgress * targetVal);
+      
+      if (prefix === '$') {
+        el.innerText = '$' + currentVal.toLocaleString();
+      } else {
+        el.innerText = currentVal.toLocaleString() + (targetVal > 0 && prefix === '' ? '+' : '');
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        if (prefix === '$') {
+          el.innerText = '$' + targetVal.toLocaleString();
+        } else {
+          el.innerText = targetVal.toLocaleString() + (targetVal > 0 && prefix === '' ? '+' : '');
+        }
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ── WORKFLOW STEPS DATA & RENDERING ──
+  const employerSteps = [
+    { num: '01', title: 'Post a Listing', desc: 'Describe the project details, required trade skill, budget parameters, and location.' },
+    { num: '02', title: 'Review Proposals', desc: 'Get bids and pitches from local verified pros. Check ratings and chat directly.' },
+    { num: '03', title: 'Release Funds', desc: 'Confirm work is complete and release payments safely through direct terms.' }
+  ];
+  
+  const workerSteps = [
+    { num: '01', title: 'Browse Active Listings', desc: 'Browse projects filtering by location, category, or budget ranges in real-time.' },
+    { num: '02', title: 'Submit Custom Bids', desc: 'Pitch yourself, specify expected rates, and offer custom timelines for the task.' },
+    { num: '03', title: 'Complete & Get Paid', desc: 'Coordinate, deliver premium quality service, and receive payments directly.' }
+  ];
+  
+  function renderWorkflow(type) {
+    const container = document.getElementById('flowStepsContainer');
+    if (!container) return;
+    
+    const steps = type === 'employer' ? employerSteps : workerSteps;
+    
+    container.innerHTML = steps.map(s => `
+      <div class="step-card reveal active">
+        <div class="step-num">${s.num}</div>
+        <h3 class="step-title">${s.title}</h3>
+        <p class="step-desc">${s.desc}</p>
+      </div>
+    `).join('');
+  }
   
   // State variables
   let allWorkers = [];
@@ -516,6 +891,12 @@
     // Filter and render if successful
     if (workersLoaded || jobsLoaded) {
       filterAndRender();
+      
+      // Update dynamic statistics strip
+      animateCounter('statPros', allWorkers.length, '');
+      animateCounter('statJobs', allJobs.length, '');
+      const totalBudget = allJobs.reduce((sum, j) => sum + (j.budget || 0), 0);
+      animateCounter('statValue', totalBudget, '$');
     }
   }
 
@@ -856,6 +1237,26 @@
   document.addEventListener('DOMContentLoaded', () => {
     checkAuthSession();
     syncData();
+    
+    // Initialize workflow widget
+    renderWorkflow('employer');
+    
+    // Bind workflow toggles
+    const flowEmployerBtn = document.getElementById('flowEmployerBtn');
+    const flowWorkerBtn = document.getElementById('flowWorkerBtn');
+    if (flowEmployerBtn && flowWorkerBtn) {
+      flowEmployerBtn.addEventListener('click', () => {
+        flowEmployerBtn.classList.add('active');
+        flowWorkerBtn.classList.remove('active');
+        renderWorkflow('employer');
+      });
+      flowWorkerBtn.addEventListener('click', () => {
+        flowWorkerBtn.classList.add('active');
+        flowEmployerBtn.classList.remove('active');
+        renderWorkflow('worker');
+      });
+    }
+
     // Delay reveal slightly to allow skeletons to print
     setTimeout(reveal, 150);
   });
