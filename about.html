@@ -25,8 +25,9 @@
     padding: 18px 6vw; background: rgba(5, 7, 10, 0.9); backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
-  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text); text-decoration: none; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
   .logo span { color: var(--accent); }
+  .logo-img { width: 32px; height: 32px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--accent); }
   nav ul { list-style: none; display: flex; gap: 2rem; }
   nav ul a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
   nav ul a:hover { color: var(--accent); }
@@ -81,14 +82,79 @@
     .grid-layout { grid-template-columns: 1fr; } 
     .stats-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── FULL SCREEN PRELOADER ── */
+  .preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #030508;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .preloader.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .preloader-content {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .preloader-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    z-index: 2;
+    animation: logo-pulse 2s infinite ease-in-out;
+  }
+  .preloader-spinner {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--accent);
+    border-right-color: var(--accent);
+    z-index: 1;
+    animation: preloader-spin 1s linear infinite;
+    box-shadow: 0 0 15px rgba(255, 204, 51, 0.1);
+  }
+  @keyframes preloader-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes logo-pulse {
+    0%, 100% { transform: scale(0.95); opacity: 0.85; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
 </style>
 </head>
 <body>
 
+<!-- Full Page Preloader -->
+<div id="preloader" class="preloader">
+  <div class="preloader-content">
+    <img src="logo.jpg" alt="IronHand Logo" class="preloader-logo">
+    <div class="preloader-spinner"></div>
+  </div>
+</div>
+
 <div class="bg-glow"></div>
 
 <nav>
-  <a href="index.html" class="logo">Iron<span>Hand</span></a>
+  <a href="index.html" class="logo"><img src="logo.jpg" alt="IronHand Logo" class="logo-img"> Iron<span>Hand</span></a>
   <ul>
     <li><a href="index.html">Home</a></li>
     <li><a href="index.html#workers">Workers</a></li>
@@ -139,6 +205,16 @@
 </footer>
 
 <script>
+  // ── PRELOADER LOGIC ──
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.classList.add('fade-out');
+      }
+    }, 2000);
+  });
+
   // ── MOUSE FOLLOW EFFECT ──
   document.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth) * 100;
