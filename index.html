@@ -947,6 +947,22 @@
   </div>
 </footer>
 
+<!-- Theme Customizer Widget -->
+<div class="theme-customizer" id="themeCustomizer">
+  <button class="customizer-toggle" id="customizerToggle" title="Change Theme Accent">
+    <i class="fa-solid fa-palette"></i>
+  </button>
+  <div class="customizer-panel" id="customizerPanel">
+    <h4>Accent Theme</h4>
+    <div class="theme-options">
+      <button class="theme-opt-btn active" data-theme="gold" style="background: #ffcc33;" title="IronGold"></button>
+      <button class="theme-opt-btn" data-theme="teal" style="background: #00e5ff;" title="CyberTeal"></button>
+      <button class="theme-opt-btn" data-theme="purple" style="background: #bd00ff;" title="NeonPurple"></button>
+      <button class="theme-opt-btn" data-theme="green" style="background: #00ff66;" title="EmeraldGreen"></button>
+    </div>
+  </div>
+</div>
+
 <!-- Reusable Modal System -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-card">
@@ -1524,11 +1540,106 @@
     }
   };
 
+  // ── THEME CONFIGURATIONS ──
+  const themes = {
+    gold: {
+      accent: '#ffcc33',
+      accentRgb: '255, 204, 51',
+      accentSecondary: '#00e5ff',
+      accentSecondaryRgb: '0, 229, 255'
+    },
+    teal: {
+      accent: '#00e5ff',
+      accentRgb: '0, 229, 255',
+      accentSecondary: '#ff3366',
+      accentSecondaryRgb: '255, 51, 102'
+    },
+    purple: {
+      accent: '#bd00ff',
+      accentRgb: '189, 0, 255',
+      accentSecondary: '#00ff66',
+      accentSecondaryRgb: '0, 255, 102'
+    },
+    green: {
+      accent: '#00ff66',
+      accentRgb: '0, 255, 102',
+      accentSecondary: '#ffcc33',
+      accentSecondaryRgb: '255, 204, 51'
+    }
+  };
+
+  function applyTheme(themeName) {
+    const config = themes[themeName];
+    if (!config) return;
+    const root = document.documentElement;
+    root.style.setProperty('--accent', config.accent);
+    root.style.setProperty('--accent-rgb', config.accentRgb);
+    root.style.setProperty('--accent-secondary', config.accentSecondary);
+    root.style.setProperty('--accent-secondary-rgb', config.accentSecondaryRgb);
+    
+    // Update active class on buttons
+    document.querySelectorAll('.theme-opt-btn').forEach(btn => {
+      if (btn.getAttribute('data-theme') === themeName) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    
+    localStorage.setItem('ironhand-theme', themeName);
+  }
+
+  function initThemeCustomizer() {
+    const toggle = document.getElementById('customizerToggle');
+    const customizer = document.getElementById('themeCustomizer');
+    if (toggle && customizer) {
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        customizer.classList.toggle('open');
+      });
+      
+      // Close customizer on outside click
+      document.addEventListener('click', () => {
+        customizer.classList.remove('open');
+      });
+      
+      const panel = document.getElementById('customizerPanel');
+      if (panel) {
+        panel.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+      }
+    }
+    
+    document.querySelectorAll('.theme-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedTheme = btn.getAttribute('data-theme');
+        applyTheme(selectedTheme);
+      });
+    });
+    
+    const savedTheme = localStorage.getItem('ironhand-theme') || 'gold';
+    applyTheme(savedTheme);
+  }
+
+  // ── MOUSE SPOTLIGHT EFFECT FOR CARDS ──
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.worker-card, .job-card, .benefit-card, .step-card, .stat-strip-card, .glass-card, .stat-card, .modal-card, .feed-item');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }
+  });
+
   // ── INIT ──
   window.addEventListener('scroll', reveal);
   
   document.addEventListener('DOMContentLoaded', () => {
     checkAuthSession();
+    initThemeCustomizer();
     syncData();
     
     // Initialize workflow widget
