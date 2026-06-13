@@ -16,6 +16,9 @@ public class Worker {
     private Double rating;
     private String icon;
 
+    @Column(length = 1000)
+    private String bookedDates;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -37,4 +40,7 @@ public class Worker {
 
     public String getIcon() { return icon; }
     public void setIcon(String icon) { this.icon = icon; }
+
+    public String getBookedDates() { return bookedDates; }
+    public void setBookedDates(String bookedDates) { this.bookedDates = bookedDates; }
 }

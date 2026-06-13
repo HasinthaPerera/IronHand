@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/workers")
@@ -18,5 +20,23 @@ public class WorkerController {
     @GetMapping
     public List<Worker> getAllWorkers() {
         return workerRepository.findAll();
+    }
+
+    @PostMapping("/{id}/book")
+    public Worker bookDate(@PathVariable Long id, @RequestParam("date") String date) {
+        Worker worker = workerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+        String booked = worker.getBookedDates();
+        if (booked == null || booked.trim().isEmpty()) {
+            booked = date.trim();
+        } else {
+            List<String> list = new ArrayList<>(Arrays.asList(booked.split(",")));
+            if (!list.contains(date.trim())) {
+                list.add(date.trim());
+                booked = String.join(",", list);
+            }
+        }
+        worker.setBookedDates(booked);
+        return workerRepository.save(worker);
     }
 }
