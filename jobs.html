@@ -580,6 +580,327 @@
     0%, 100% { transform: scale(0.95); opacity: 0.85; }
     50% { transform: scale(1.05); opacity: 1; }
   }
+
+  /* ── CATEGORY COUNT BADGES ── */
+  .cat-count-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .sidebar-cat-btn.active .cat-count-badge {
+    background: rgba(0, 0, 0, 0.15);
+    color: #000;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  .sidebar-cat-btn:hover:not(.active) .cat-count-badge {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* ── DASHBOARD TAB NAVIGATION ── */
+  .dashboard-nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 6vw;
+    margin-bottom: 25px;
+    margin-top: -15px;
+  }
+  .dashboard-tabs {
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .dashboard-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dashboard-tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .dashboard-tab-btn.active {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 8px 20px rgba(255, 204, 51, 0.25);
+  }
+
+  /* ── PROPOSALS GRID MODIFICATION ── */
+  .jobs-container.proposals-mode {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── PROPOSALS HUB LAYOUT ── */
+  .proposals-hub-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 10px;
+    animation: fade-in 0.5s ease;
+  }
+  @media (max-width: 992px) {
+    .proposals-hub-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .proposals-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 30px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 14px;
+  }
+  .section-title span {
+    font-size: 0.82rem;
+    color: var(--accent);
+    background: rgba(255, 204, 51, 0.1);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-family: 'DM Sans';
+    font-weight: 700;
+  }
+  .proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .proposal-card {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .proposal-card:hover {
+    border-color: var(--border-hover);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-2px);
+  }
+  .proposal-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  .proposal-job-title {
+    font-family: 'Syne';
+    font-size: 1.15rem;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .proposal-email {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .proposal-email i {
+    color: var(--accent);
+  }
+  .proposal-pitch {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 12px 16px;
+    border-radius: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .proposal-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    padding-top: 14px;
+  }
+  .proposal-bid {
+    font-weight: 800;
+    color: var(--accent);
+    font-size: 1.1rem;
+  }
+  
+  /* Status tags */
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .status-badge.pending {
+    background: rgba(255, 204, 51, 0.08);
+    border: 1px solid rgba(255, 204, 51, 0.15);
+    color: var(--accent);
+  }
+  .status-badge.accepted {
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+  }
+  .status-badge.rejected {
+    background: rgba(255, 77, 77, 0.08);
+    border: 1px solid rgba(255, 77, 77, 0.15);
+    color: #ff4d4d;
+  }
+
+  /* Proposal action buttons */
+  .proposal-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .proposal-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Syne';
+    transition: 0.3s;
+    border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .proposal-btn.accept {
+    background: rgba(0, 255, 136, 0.08);
+    color: #00ff88;
+    border-color: rgba(0, 255, 136, 0.2);
+  }
+  .proposal-btn.accept:hover {
+    background: #00ff88;
+    color: #000;
+    border-color: #00ff88;
+  }
+  .proposal-btn.reject {
+    background: rgba(255, 77, 77, 0.08);
+    color: #ff4d4d;
+    border-color: rgba(255, 77, 77, 0.2);
+  }
+  .proposal-btn.reject:hover {
+    background: #ff4d4d;
+    color: #fff;
+    border-color: #ff4d4d;
+  }
+
+  /* ── TOAST NOTIFICATIONS ── */
+  .toast-container {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1010;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(12, 15, 22, 0.95);
+    border: 1px solid var(--border);
+    padding: 16px 22px;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 500;
+    min-width: 320px;
+    max-width: 450px;
+    pointer-events: auto;
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .toast.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  .toast-success {
+    border-left: 4px solid #00ff88;
+    box-shadow: 0 20px 40px rgba(0, 255, 136, 0.04);
+  }
+  .toast-error {
+    border-left: 4px solid #ff4d4d;
+    box-shadow: 0 20px 40px rgba(255, 77, 77, 0.04);
+  }
+  .toast-info {
+    border-left: 4px solid #00e5ff;
+    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.04);
+  }
+  .toast-icon {
+    font-size: 1.25rem;
+  }
+  .toast-success .toast-icon { color: #00ff88; }
+  .toast-error .toast-icon { color: #ff4d4d; }
+  .toast-info .toast-icon { color: #00e5ff; }
+  .toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+  .toast-close:hover {
+    color: #fff;
+  }
+
+  .job-time-badge {
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
@@ -614,13 +935,25 @@
 <!-- Mini Hero Header -->
 <section class="hero-mini">
   <div class="reveal active">
-    <h1>Active <span>Job Opportunities</span></h1>
-    <p class="hero-sub">Apply to projects posted by verified community members. Filter, sort, and secure your next contract today.</p>
+    <h1 id="heroTitle">Active <span>Job Opportunities</span></h1>
+    <p class="hero-sub" id="heroSubtitle">Apply to projects posted by verified community members. Filter, sort, and secure your next contract today.</p>
   </div>
 </section>
 
+<!-- Dashboard Nav Container (Toggled via JS if logged in) -->
+<div class="dashboard-nav-container" id="dashboardNavContainer" style="display: none;">
+  <div class="dashboard-tabs">
+    <button class="dashboard-tab-btn active" id="tabBrowseJobs">
+      <i class="fa-solid fa-briefcase"></i> Find Jobs
+    </button>
+    <button class="dashboard-tab-btn" id="tabProposals">
+      <i class="fa-solid fa-file-contract"></i> Proposals Hub
+    </button>
+  </div>
+</div>
+
 <!-- Filter & Results Container -->
-<div class="jobs-container">
+<div class="jobs-container" id="jobsContainer">
   
   <!-- Left Side: Interactive Sidebar Filters -->
   <aside class="filters-sidebar">
@@ -696,7 +1029,7 @@
   <main class="results-column">
     
     <!-- Results Header -->
-    <div class="results-header">
+    <div class="results-header" id="resultsHeader">
       <div class="results-count" id="resultsCount">
         Found <span>0</span> active job listings
       </div>
@@ -705,6 +1038,31 @@
     <!-- Grid -->
     <div class="jobs-grid" id="jobGrid">
       <!-- Skeleton loaders rendered by default -->
+    </div>
+
+    <!-- Proposals Hub Layout -->
+    <div class="proposals-hub-layout" id="proposalsHubLayout" style="display: none;">
+      <!-- Received Proposals -->
+      <div class="proposals-section">
+        <h2 class="section-title">
+          <span><i class="fa-solid fa-inbox"></i> Proposals Received</span>
+          <span id="receivedProposalsCount">0</span>
+        </h2>
+        <div class="proposals-list" id="receivedProposalsList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+      
+      <!-- Sent Proposals -->
+      <div class="proposals-section">
+        <h2 class="section-title">
+          <span><i class="fa-solid fa-paper-plane"></i> Proposals Sent</span>
+          <span id="sentProposalsCount">0</span>
+        </h2>
+        <div class="proposals-list" id="sentProposalsList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
     </div>
     
   </main>
@@ -724,6 +1082,9 @@
   Project developed by <strong>Hasintha Heshan</strong> • Sabaragamuwa University of Sri Lanka
 </footer>
 
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
 <script>
   // ── PRELOADER LOGIC ──
   window.addEventListener('DOMContentLoaded', () => {
@@ -736,6 +1097,7 @@
   });
 
   const JOBS_API = 'http://localhost:8082/api/jobs/all';
+  const PROPOSALS_API = 'http://localhost:8082/api/proposals';
   
   // State variables
   let allJobs = [];
@@ -745,6 +1107,71 @@
   let minBudget = null;
   let maxBudget = null;
   let sortBy = 'newest';
+
+  // ── TOAST NOTIFICATION UTILITY ──
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    let iconClass = 'fa-circle-info';
+    if (type === 'success') iconClass = 'fa-circle-check';
+    if (type === 'error') iconClass = 'fa-circle-exclamation';
+
+    toast.innerHTML = `
+      <i class="fa-solid ${iconClass} toast-icon"></i>
+      <span class="toast-message">${message}</span>
+      <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
+    `;
+
+    container.appendChild(toast);
+    toast.offsetHeight; // Force reflow
+    toast.classList.add('show');
+
+    const autoDismiss = setTimeout(() => {
+      dismissToast(toast);
+    }, 4000);
+
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+      clearTimeout(autoDismiss);
+      dismissToast(toast);
+    });
+  }
+
+  function dismissToast(toast) {
+    toast.classList.remove('show');
+    toast.style.transform = 'translateY(-20px) scale(0.9)';
+    toast.style.opacity = '0';
+    toast.addEventListener('transitionend', () => {
+      toast.remove();
+    });
+  }
+
+  // ── RELATIVE TIME UTILITY ──
+  function getRelativeTime(dateTimeStr) {
+    if (!dateTimeStr) return 'Recently';
+    try {
+      const date = new Date(dateTimeStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSecs = Math.floor(diffMs / 1000);
+      const diffMins = Math.floor(diffSecs / 60);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffSecs < 60) return 'Just now';
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    } catch (e) {
+      return 'Recently';
+    }
+  }
 
   // ── MOUSE FOLLOW GLOW EFFECT ──
   document.addEventListener('mousemove', (e) => {
@@ -769,6 +1196,7 @@
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const email = localStorage.getItem('userEmail');
     const authGroup = document.getElementById('navAuthGroup');
+    const dashboardNavContainer = document.getElementById('dashboardNavContainer');
 
     if (isLoggedIn && email) {
       const displayEmail = email.split('@')[0];
@@ -789,11 +1217,19 @@
         localStorage.removeItem('userEmail');
         window.location.reload();
       });
+
+      // Show Dashboard Tabs if logged in
+      if (dashboardNavContainer) {
+        dashboardNavContainer.style.display = 'block';
+      }
     } else {
       authGroup.innerHTML = `
         <a href="post job.html" class="nav-cta secondary">Post a Job</a>
         <a href="login.html" class="nav-cta">Get Started</a>
       `;
+      if (dashboardNavContainer) {
+        dashboardNavContainer.style.display = 'none';
+      }
     }
   }
 
@@ -818,6 +1254,7 @@
       const response = await fetch(JOBS_API);
       if (response.ok) {
         allJobs = await response.json();
+        updateCategoryCounts();
         filterAndRender();
       } else {
         throw new Error('Server returned error status');
@@ -841,6 +1278,43 @@
       </div>
     `;
     document.getElementById('resultsCount').innerHTML = 'Found <span>0</span> active job listings';
+  }
+
+  // ── UPDATE CATEGORY JOB COUNTS ──
+  function updateCategoryCounts() {
+    const counts = {
+      all: allJobs.length,
+      Plumbing: 0,
+      Electrical: 0,
+      Construction: 0,
+      Cleaning: 0
+    };
+
+    allJobs.forEach(job => {
+      const cat = job.category;
+      if (counts[cat] !== undefined) {
+        counts[cat]++;
+      }
+    });
+
+    const sidebarBtns = document.querySelectorAll('.sidebar-cat-btn');
+    sidebarBtns.forEach(btn => {
+      const cat = btn.getAttribute('data-category');
+      const count = counts[cat] !== undefined ? counts[cat] : 0;
+      
+      let label = '';
+      let icon = '';
+      if (cat === 'all') { icon = 'fa-grip'; label = 'All Categories'; }
+      else if (cat === 'Plumbing') { icon = 'fa-faucet'; label = 'Plumbing'; }
+      else if (cat === 'Electrical') { icon = 'fa-bolt'; label = 'Electrical'; }
+      else if (cat === 'Construction') { icon = 'fa-hammer'; label = 'Construction'; }
+      else if (cat === 'Cleaning') { icon = 'fa-broom'; label = 'Cleaning'; }
+      
+      btn.innerHTML = `
+        <span><i class="fa-solid ${icon}"></i> ${label}</span>
+        <span class="cat-count-badge">${count}</span>
+      `;
+    });
   }
 
   // ── SMART CATEGORY MATCHING ──
@@ -931,12 +1405,14 @@
     grid.innerHTML = jobs.map(j => {
       const location = j.location || 'Sabaragamuwa, SL';
       const owner = j.postedBy ? j.postedBy.split('@')[0] : 'Admin';
+      const timeStr = getRelativeTime(j.createdAt);
       
       return `
         <div class="job-card reveal active">
           <div>
             <div class="card-top">
               <span class="job-badge">${j.category}</span>
+              <span class="job-time-badge" title="Posted on ${j.createdAt || 'Unknown'}"><i class="fa-regular fa-clock"></i> ${timeStr}</span>
             </div>
             <h3 class="card-title">${j.title}</h3>
             <p class="card-bio">${j.description}</p>
@@ -1033,10 +1509,52 @@
 
     openModal(modalHTML);
 
-    document.getElementById('applyForm').addEventListener('submit', (e) => {
+    document.getElementById('applyForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      alert(`Application sent! The job owner will contact you if they are interested.`);
-      closeModal();
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const userEmail = localStorage.getItem('userEmail');
+
+      if (!isLoggedIn || !userEmail) {
+        showToast("You must be logged in to apply for this job.", "error");
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+        closeModal();
+        return;
+      }
+
+      if (userEmail === j.postedBy) {
+        showToast("You cannot apply to your own job listing!", "error");
+        closeModal();
+        return;
+      }
+
+      const proposalData = {
+        jobId: j.id,
+        jobTitle: j.title,
+        applicantEmail: userEmail,
+        pitch: document.getElementById('pitch').value.trim(),
+        bid: parseFloat(document.getElementById('bid').value),
+        jobOwnerEmail: j.postedBy || 'anonymous@example.com'
+      };
+
+      try {
+        const response = await fetch(`${PROPOSALS_API}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(proposalData)
+        });
+
+        if (response.ok) {
+          showToast("Proposal sent successfully!", "success");
+          closeModal();
+        } else {
+          showToast("Failed to send proposal. Please try again.", "error");
+        }
+      } catch (err) {
+        console.error("Apply Error:", err);
+        showToast("Error connecting to server. Ensure backend is running.", "error");
+      }
     });
   }
 
@@ -1100,6 +1618,152 @@
 
     filterAndRender();
   });
+
+  // ── PROPOSALS HUB BUSINESS LOGIC ──
+  const tabBrowseJobs = document.getElementById('tabBrowseJobs');
+  const tabProposals = document.getElementById('tabProposals');
+  const jobsContainer = document.getElementById('jobsContainer');
+  const proposalsHubLayout = document.getElementById('proposalsHubLayout');
+  const sidebar = document.querySelector('.filters-sidebar');
+  const resultsHeader = document.getElementById('resultsHeader');
+  const jobGrid = document.getElementById('jobGrid');
+  const heroTitle = document.getElementById('heroTitle');
+  const heroSubtitle = document.getElementById('heroSubtitle');
+
+  tabBrowseJobs.addEventListener('click', () => {
+    tabBrowseJobs.classList.add('active');
+    tabProposals.classList.remove('active');
+    
+    // Switch views
+    proposalsHubLayout.style.display = 'none';
+    sidebar.style.display = 'block';
+    resultsHeader.style.display = 'flex';
+    jobGrid.style.display = 'grid';
+    jobsContainer.classList.remove('proposals-mode');
+    
+    // Switch Hero Text
+    heroTitle.innerHTML = 'Active <span>Job Opportunities</span>';
+    heroSubtitle.innerText = 'Apply to projects posted by verified community members. Filter, sort, and secure your next contract today.';
+    
+    filterAndRender();
+  });
+
+  tabProposals.addEventListener('click', () => {
+    tabProposals.classList.add('active');
+    tabBrowseJobs.classList.remove('active');
+    
+    // Switch views
+    sidebar.style.display = 'none';
+    resultsHeader.style.display = 'none';
+    jobGrid.style.display = 'none';
+    proposalsHubLayout.style.display = 'grid';
+    jobsContainer.classList.add('proposals-mode');
+    
+    // Switch Hero Text
+    heroTitle.innerHTML = 'Proposals <span>Hub</span>';
+    heroSubtitle.innerText = 'Manage applications submitted for your projects, and monitor the bids you have sent to others.';
+    
+    fetchProposals();
+  });
+
+  async function fetchProposals() {
+    const email = localStorage.getItem('userEmail');
+    if (!email) return;
+
+    // Render skeleton lists for proposals
+    document.getElementById('receivedProposalsList').innerHTML = '<p style="color: var(--muted);">Loading received proposals...</p>';
+    document.getElementById('sentProposalsList').innerHTML = '<p style="color: var(--muted);">Loading sent proposals...</p>';
+
+    try {
+      const [sentRes, receivedRes] = await Promise.all([
+        fetch(`${PROPOSALS_API}/sent?email=${email}`),
+        fetch(`${PROPOSALS_API}/received?email=${email}`)
+      ]);
+
+      if (sentRes.ok && receivedRes.ok) {
+        const sentProposals = await sentRes.json();
+        const receivedProposals = await receivedRes.json();
+
+        renderProposalsList('sentProposalsList', sentProposals, 'sent');
+        renderProposalsList('receivedProposalsList', receivedProposals, 'received');
+
+        document.getElementById('sentProposalsCount').innerText = sentProposals.length;
+        document.getElementById('receivedProposalsCount').innerText = receivedProposals.length;
+      } else {
+        throw new Error("Failed to fetch proposals");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Error loading proposals. Check backend connection.", "error");
+      document.getElementById('receivedProposalsList').innerHTML = '<p style="color: #ff4d4d;">Failed to load proposals.</p>';
+      document.getElementById('sentProposalsList').innerHTML = '<p style="color: #ff4d4d;">Failed to load proposals.</p>';
+    }
+  }
+
+  function renderProposalsList(containerId, proposals, type) {
+    const list = document.getElementById(containerId);
+    if (proposals.length === 0) {
+      list.innerHTML = `
+        <div style="text-align: center; padding: 30px; color: var(--muted);">
+          <i class="fa-solid fa-folder-open" style="font-size: 1.8rem; margin-bottom: 10px; opacity: 0.5;"></i>
+          <p style="font-size: 0.9rem;">No proposals found.</p>
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = proposals.map(p => {
+      const relativeTime = getRelativeTime(p.createdAt);
+      const emailField = type === 'received' ? `Applicant: ${p.applicantEmail}` : `Job Owner: ${p.jobOwnerEmail}`;
+      const statusClass = p.status.toLowerCase();
+      
+      let actionButtons = '';
+      if (type === 'received' && p.status === 'PENDING') {
+        actionButtons = `
+          <div class="proposal-actions">
+            <button class="proposal-btn accept" onclick="updateProposalStatus(${p.id}, 'ACCEPTED')">
+              <i class="fa-solid fa-check"></i> Accept
+            </button>
+            <button class="proposal-btn reject" onclick="updateProposalStatus(${p.id}, 'REJECTED')">
+              <i class="fa-solid fa-times"></i> Reject
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="proposal-card reveal active">
+          <div class="proposal-card-header">
+            <h3 class="proposal-job-title">${p.jobTitle}</h3>
+            <span class="status-badge ${statusClass}">${p.status}</span>
+          </div>
+          <div class="proposal-email"><i class="fa-solid fa-envelope"></i> ${emailField}</div>
+          <div class="proposal-pitch">"${p.pitch}"</div>
+          <div class="proposal-card-footer">
+            <span class="proposal-bid">Expected Bid: $${p.bid}</span>
+            ${actionButtons ? actionButtons : `<span style="font-size: 0.75rem; color: var(--muted);"><i class="fa-regular fa-clock"></i> ${relativeTime}</span>`}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.updateProposalStatus = async function(id, newStatus) {
+    try {
+      const response = await fetch(`${PROPOSALS_API}/${id}/status?status=${newStatus}`, {
+        method: 'PATCH'
+      });
+      if (response.ok) {
+        showToast(`Proposal status updated to ${newStatus}!`, "success");
+        fetchProposals();
+      } else {
+        showToast("Failed to update proposal status.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Error updating proposal. Check backend connection.", "error");
+    }
+  }
 
   // ── INIT ──
   document.addEventListener('DOMContentLoaded', () => {

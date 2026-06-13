@@ -28,6 +28,9 @@ public class job {
     @JsonProperty("postedBy")
     private String postedBy;
 
+    @JsonProperty("createdAt")
+    private java.time.LocalDateTime createdAt;
+
     // Manual Getters and Setters to avoid Lombok naming issues
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -49,4 +52,7 @@ public class job {
 
     public String getPostedBy() { return postedBy; }
     public void setPostedBy(String postedBy) { this.postedBy = postedBy; }
+
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

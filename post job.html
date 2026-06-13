@@ -144,14 +144,15 @@
   document.getElementById('jobForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    const userEmail = localStorage.getItem('userEmail') || 'anonymous@example.com';
     const jobData = {
-  title: document.getElementById('title').value,
-  category: document.getElementById('category').value,
-  description: document.getElementById('description').value,
-  budget: document.getElementById('budget').value,
-  location: document.getElementById('location').value, // Added location
-  postedBy: "logged-in-user@example.com" 
-};
+      title: document.getElementById('title').value,
+      category: document.getElementById('category').value,
+      description: document.getElementById('description').value,
+      budget: document.getElementById('budget').value,
+      location: document.getElementById('location').value, // Added location
+      postedBy: userEmail 
+    };
 
     try {
       const response = await fetch('http://localhost:8082/api/jobs/post', {

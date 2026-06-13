@@ -21,6 +21,10 @@ public class jobcontroller {
         // This will print the title in your IntelliJ console to prove it's not NULL anymore
         System.out.println("Received Job: " + jobData.getTitle());
 
+        if (jobData.getCreatedAt() == null) {
+            jobData.setCreatedAt(java.time.LocalDateTime.now());
+        }
+
         jobRepository.save(jobData);
         return ResponseEntity.ok("Job posted successfully!");
     }
