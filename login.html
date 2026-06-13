@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Login — IronHand</title>
+<title>Sign In & Register — IronHand</title>
 <link rel="icon" type="image/png" href="favicon.png" />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,6 +15,8 @@
     --border: rgba(255, 255, 255, 0.08);
     --accent: #ffcc33;
     --accent-glow: rgba(255, 204, 51, 0.25);
+    --accent-hover: #e6b82e;
+    --accent-secondary: #00e5ff;
     --text: #f0f2f5;
     --muted: #8a91ad;
     --error: #ff4d4d;
@@ -80,7 +82,7 @@
     background: rgba(255, 255, 255, 0.01);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 10;
+    z-index: 1000;
   }
   
   .back-home-btn:hover {
@@ -90,22 +92,22 @@
     transform: translateX(-4px);
   }
 
-  /* ── LOGIN CARD ── */
-  .login-card {
+  /* ── AUTH CONTAINER ── */
+  .auth-container {
     background: var(--surface);
-    padding: 40px;
     border-radius: 28px;
     border: 1px solid var(--border);
-    width: 100%;
-    max-width: 440px;
-    text-align: center;
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    animation: entrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards, float 8s ease-in-out infinite 1s;
+    position: relative;
+    overflow: hidden;
+    width: 850px;
+    max-width: 100%;
+    min-height: 600px;
+    animation: entrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
     transform: translateY(20px);
-    position: relative;
     z-index: 2;
   }
 
@@ -116,48 +118,83 @@
     }
   }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+  .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+  }
+
+  .login-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
+
+  .register-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+  }
+
+  /* Active states for transitions */
+  .auth-container.right-panel-active .login-container {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .auth-container.right-panel-active .register-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+  }
+
+  @keyframes show {
+    0%, 49.99% { opacity: 0; z-index: 1; }
+    50%, 100% { opacity: 1; z-index: 5; }
+  }
+
+  /* ── FORM STYLING ── */
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 50px;
+    height: 100%;
+    width: 100%;
+    background: transparent;
   }
 
   h2 { 
     font-family: 'Syne'; 
-    font-size: 2.6rem; 
+    font-size: 2.3rem; 
     margin-bottom: 8px; 
     letter-spacing: -1.5px; 
     font-weight: 800;
   }
   h2 span { 
     color: var(--accent); 
-    text-shadow: 0 0 30px var(--accent-glow);
-  }
-  .brand-logo {
-    width: 90px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 20px;
-    border: 2px solid var(--accent);
-    margin-bottom: 24px;
-    box-shadow: 0 8px 30px rgba(255, 204, 51, 0.25);
   }
   
   .subtitle { 
     color: var(--muted); 
-    margin-bottom: 36px; 
-    font-size: 0.95rem; 
+    margin-bottom: 28px; 
+    font-size: 0.92rem; 
     line-height: 1.5;
   }
-  
-  /* ── INPUT FIELDS ── */
+
   .input-group { 
     text-align: left; 
-    margin-bottom: 24px; 
+    margin-bottom: 20px; 
+    width: 100%;
   }
   
   label { 
     display: block; 
-    font-size: 0.85rem; 
+    font-size: 0.82rem; 
     margin-bottom: 8px; 
     color: var(--muted); 
     font-weight: 600; 
@@ -172,14 +209,14 @@
 
   .input-wrapper input {
     width: 100%;
-    padding: 16px 18px 16px 48px;
+    padding: 15px 18px 15px 46px;
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid var(--border);
     border-radius: 14px;
     color: white;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-family: 'DM Sans', sans-serif;
   }
   
@@ -193,7 +230,7 @@
     position: absolute;
     left: 18px;
     color: var(--muted);
-    font-size: 1.05rem;
+    font-size: 1rem;
     pointer-events: none;
     transition: color 0.3s;
   }
@@ -202,28 +239,27 @@
     color: var(--accent);
   }
 
-  /* Password Toggle Button */
   .toggle-password {
     position: absolute;
     right: 18px;
     color: var(--muted);
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 1.05rem;
+    font-size: 1rem;
     z-index: 5;
     padding: 5px;
   }
   .toggle-password:hover { 
     color: var(--accent); 
   }
-  
-  /* ── FORM ACTIONS ROW ── */
+
   .form-actions-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     font-size: 0.88rem;
+    width: 100%;
   }
 
   .remember-me-label {
@@ -233,7 +269,6 @@
     cursor: pointer;
     color: var(--muted);
     user-select: none;
-    margin-bottom: 0;
     font-weight: 500;
   }
 
@@ -288,15 +323,14 @@
     font-weight: 500;
     transition: color 0.3s;
   }
-
   .forgot-pw-link:hover {
     color: var(--accent);
   }
 
-  /* ── SIGN IN BUTTON ── */
-  .login-btn {
+  /* ── AUTH BUTTON ── */
+  .auth-btn {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     background: var(--accent);
     color: #000;
     border: none;
@@ -304,7 +338,7 @@
     font-weight: 800;
     cursor: pointer;
     font-family: 'Syne';
-    font-size: 1.05rem;
+    font-size: 1rem;
     transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     justify-content: center;
@@ -314,67 +348,46 @@
     overflow: hidden;
   }
 
-  .login-btn:hover { 
+  .auth-btn:hover { 
     transform: translateY(-2px);
     box-shadow: 0 15px 30px rgba(255, 204, 51, 0.25); 
     background: #ffd659;
   }
 
-  .login-btn:active {
-    transform: translateY(0);
-  }
-
-  .login-btn:disabled { 
+  .auth-btn:disabled { 
     opacity: 0.6; 
     cursor: not-allowed; 
     transform: none;
     box-shadow: none;
   }
 
-  /* ── SIGNUP & DIVIDER ── */
-  .signup-link { 
-    margin-top: 28px; 
-    font-size: 0.92rem; 
-    color: var(--muted); 
-  }
-  .signup-link a { 
-    color: var(--accent); 
-    text-decoration: none; 
-    font-weight: 700; 
-    border-bottom: 1px solid transparent; 
-    transition: all 0.3s; 
-  }
-  .signup-link a:hover { 
-    border-bottom-color: var(--accent); 
-  }
-
+  /* ── SOCIAL LOGINS & DIVIDER ── */
   .divider {
     display: flex;
     align-items: center;
     text-align: center;
     color: rgba(255, 255, 255, 0.15);
-    margin: 28px 0 24px;
-    font-size: 0.8rem;
+    margin: 20px 0 16px;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
+    width: 100%;
   }
-
   .divider::before, .divider::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
-
   .divider span {
     padding: 0 12px;
   }
 
-  /* ── SOCIAL LOGINS ── */
   .social-login-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 14px;
     margin-bottom: 10px;
+    width: 100%;
   }
 
   .social-btn {
@@ -382,13 +395,13 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 14px;
+    padding: 13px;
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid var(--border);
     border-radius: 14px;
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -399,14 +412,140 @@
     transform: translateY(-2px);
   }
 
-  .google-btn:hover {
-    border-color: #4285F4;
-    box-shadow: 0 8px 20px rgba(66, 133, 244, 0.12);
+  .google-btn:hover { border-color: #4285F4; box-shadow: 0 8px 20px rgba(66, 133, 244, 0.12); }
+  .github-btn:hover { border-color: #fff; box-shadow: 0 8px 20px rgba(255, 255, 255, 0.08); }
+
+  .error-msg {
+    color: var(--error);
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: none;
+    text-align: left;
+    width: 100%;
   }
 
-  .github-btn:hover {
-    border-color: #fff;
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.08);
+  /* ── OVERLAY BANNER (SLIDING PANEL) ── */
+  .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+    border-left: 1px solid var(--border);
+  }
+
+  .auth-container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+    border-left: none;
+    border-right: 1px solid var(--border);
+  }
+
+  .overlay {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #ffffff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .auth-container.right-panel-active .overlay {
+    transform: translateX(50%);
+  }
+
+  .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .overlay-left {
+    transform: translateX(-20%);
+  }
+
+  .auth-container.right-panel-active .overlay-left {
+    transform: translateX(0);
+  }
+
+  .overlay-right {
+    right: 0;
+    transform: translateX(0);
+  }
+
+  .auth-container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+  }
+
+  .overlay-panel .brand-logo {
+    width: 85px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 2px solid #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  .overlay-panel h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -1.5px;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .overlay-panel h1 span {
+    color: var(--accent);
+  }
+
+  .overlay-panel p {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 320px;
+    margin-bottom: 24px;
+  }
+
+  .ghost-btn {
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    font-family: 'Syne';
+    font-weight: 800;
+    padding: 13px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ghost-btn:hover {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
   }
 
   /* ── TOAST NOTIFICATIONS ── */
@@ -414,18 +553,17 @@
     position: fixed;
     top: 30px;
     right: 30px;
-    z-index: 1000;
+    z-index: 1010;
     display: flex;
     flex-direction: column;
     gap: 12px;
     pointer-events: none;
   }
-
   .toast {
     display: flex;
     align-items: center;
     gap: 14px;
-    background: rgba(12, 15, 22, 0.92);
+    background: rgba(12, 15, 22, 0.95);
     border: 1px solid var(--border);
     padding: 16px 22px;
     border-radius: 18px;
@@ -442,35 +580,17 @@
     opacity: 0;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-
   .toast.show {
     transform: translateY(0) scale(1);
     opacity: 1;
   }
-
-  .toast-success {
-    border-left: 4px solid #00ff88;
-    box-shadow: 0 20px 40px rgba(0, 255, 136, 0.04);
-  }
-
-  .toast-error {
-    border-left: 4px solid var(--error);
-    box-shadow: 0 20px 40px rgba(255, 77, 77, 0.04);
-  }
-
-  .toast-info {
-    border-left: 4px solid #00e5ff;
-    box-shadow: 0 20px 40px rgba(0, 229, 255, 0.04);
-  }
-
-  .toast-icon {
-    font-size: 1.25rem;
-  }
-
+  .toast-success { border-left: 4px solid #00ff88; box-shadow: 0 20px 40px rgba(0, 255, 136, 0.04); }
+  .toast-error { border-left: 4px solid var(--error); box-shadow: 0 20px 40px rgba(255, 77, 77, 0.04); }
+  .toast-info { border-left: 4px solid #00e5ff; box-shadow: 0 20px 40px rgba(0, 229, 255, 0.04); }
+  .toast-icon { font-size: 1.25rem; }
   .toast-success .toast-icon { color: #00ff88; }
   .toast-error .toast-icon { color: var(--error); }
   .toast-info .toast-icon { color: #00e5ff; }
-
   .toast-close {
     margin-left: auto;
     background: none;
@@ -484,27 +604,66 @@
     justify-content: center;
     transition: color 0.2s;
   }
+  .toast-close:hover { color: #fff; }
 
-  .toast-close:hover {
-    color: #fff;
-  }
-
-  /* Mobile responsiveness Adjustments */
-  @media (max-width: 580px) {
-    .back-home-btn {
-      position: relative;
-      top: 0;
-      left: 0;
-      margin-bottom: 25px;
-      align-self: flex-start;
-    }
+  /* ── RESPONSIVE MOBILE VIEWPORTS ── */
+  @media (max-width: 768px) {
     body {
+      padding: 80px 15px 40px;
       flex-direction: column;
-      padding: 30px 16px;
       justify-content: flex-start;
     }
-    .login-card {
-      padding: 32px 24px;
+    .back-home-btn {
+      position: absolute;
+      top: 20px;
+      left: 15px;
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: auto;
+      display: block;
+      padding: 35px 25px;
+    }
+    .form-container {
+      position: relative;
+      width: 100%;
+      height: auto;
+      transform: none !important;
+      opacity: 1 !important;
+      display: none;
+    }
+    .auth-container:not(.right-panel-active) .login-container {
+      display: block;
+    }
+    .auth-container.right-panel-active .register-container {
+      display: block;
+    }
+    .overlay-container {
+      display: none;
+    }
+    .form-container form {
+      padding: 0;
+    }
+    .mobile-toggle-text {
+      display: block;
+      margin-top: 22px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+    .mobile-toggle-text a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .mobile-toggle-text a:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-toggle-text {
+      display: none;
     }
   }
 
@@ -587,62 +746,135 @@
   <span>Back to Home</span>
 </a>
 
-<div class="login-card">
-  <img src="logo.jpg" alt="IronHand Logo" class="brand-logo">
-  <h2>Iron<span>Hand</span></h2>
-  <p class="subtitle">Secure authentication for the IronHand network.</p>
+<!-- Unified Auth Container -->
+<div class="auth-container" id="authContainer">
   
-  <form id="loginForm">
-    <div class="input-group">
-      <label for="email">Email Address</label>
-      <div class="input-wrapper">
-        <i class="fa-solid fa-envelope field-icon"></i>
-        <input type="email" id="email" required placeholder="hasintha@example.com" autofocus autocomplete="email">
+  <!-- REGISTER Form Container -->
+  <div class="form-container register-container">
+    <form id="registerForm">
+      <h2>Create <span>Account</span></h2>
+      <p class="subtitle">Forge your account and gain network access.</p>
+      
+      <div class="input-group">
+        <label for="regEmail">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-envelope field-icon"></i>
+          <input type="email" id="regEmail" required placeholder="name@company.com" autocomplete="email">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="regPassword">Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock field-icon"></i>
+          <input type="password" id="regPassword" required placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
+          <i class="fa-solid fa-eye toggle-password" id="regEyeIcon"></i>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock-open field-icon"></i>
+          <input type="password" id="confirmPassword" required placeholder="Repeat password" autocomplete="new-password">
+          <i class="fa-solid fa-eye toggle-password" id="confirmEyeIcon"></i>
+        </div>
+        <div id="matchError" class="error-msg">Passwords do not match</div>
+      </div>
+
+      <button type="submit" id="regSubmitBtn" class="auth-btn">
+        <span>Sign Up</span>
+        <i class="fa-solid fa-user-plus"></i>
+      </button>
+      
+      <div class="mobile-toggle-text">
+        Already a member? <a href="#" id="mobileToLogin">Sign In</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- LOGIN Form Container -->
+  <div class="form-container login-container">
+    <form id="loginForm">
+      <h2>Sign <span>In</span></h2>
+      <p class="subtitle">Secure authentication for the IronHand network.</p>
+      
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-envelope field-icon"></i>
+          <input type="email" id="email" required placeholder="hasintha@example.com" autocomplete="email">
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock field-icon"></i>
+          <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+          <i class="fa-solid fa-eye toggle-password" id="eyeIcon"></i>
+        </div>
+      </div>
+
+      <div class="form-actions-row">
+        <label class="remember-me-label">
+          <input type="checkbox" id="rememberMe">
+          <span class="custom-checkbox"></span>
+          <span class="remember-text">Remember me</span>
+        </label>
+        <a href="#" class="forgot-pw-link" id="forgotPasswordBtn">Forgot Password?</a>
+      </div>
+
+      <button type="submit" id="submitBtn" class="auth-btn">
+        <span>Sign In</span>
+        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+      </button>
+
+      <div class="divider">
+        <span>or sign in with</span>
+      </div>
+
+      <div class="social-login-grid">
+        <button type="button" class="social-btn google-btn" id="googleLoginBtn">
+          <i class="fa-brands fa-google"></i>
+          <span>Google</span>
+        </button>
+        <button type="button" class="social-btn github-btn" id="githubLoginBtn">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </button>
+      </div>
+
+      <div class="mobile-toggle-text">
+        New to IronHand? <a href="#" id="mobileToRegister">Create account</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Overlay Panel Container -->
+  <div class="overlay-container">
+    <div class="overlay">
+      <!-- Left Panel (Click to sign in) -->
+      <div class="overlay-panel overlay-left">
+        <img src="logo.jpg" alt="IronHand Logo" class="brand-logo">
+        <h1>Welcome Back!</h1>
+        <p>Already have an account? Sign in and resume managing your contracts and opportunities.</p>
+        <button class="ghost-btn" id="toLoginBtn">
+          <i class="fa-solid fa-arrow-left"></i> Sign In
+        </button>
+      </div>
+      <!-- Right Panel (Click to register) -->
+      <div class="overlay-panel overlay-right">
+        <img src="logo.jpg" alt="IronHand Logo" class="brand-logo">
+        <h1>Welcome to...</h1>
+        <p>Enter your details, build your profile, and start securing verified contract work today.</p>
+        <button class="ghost-btn" id="toRegisterBtn">
+          Create Account <i class="fa-solid fa-arrow-right"></i>
+        </button>
       </div>
     </div>
-    
-    <div class="input-group">
-      <label for="password">Password</label>
-      <div class="input-wrapper">
-        <i class="fa-solid fa-lock field-icon"></i>
-        <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
-        <i class="fa-solid fa-eye toggle-password" id="eyeIcon"></i>
-      </div>
-    </div>
-
-    <div class="form-actions-row">
-      <label class="remember-me-label">
-        <input type="checkbox" id="rememberMe">
-        <span class="custom-checkbox"></span>
-        <span class="remember-text">Remember me</span>
-      </label>
-      <a href="#" class="forgot-pw-link" id="forgotPasswordBtn">Forgot Password?</a>
-    </div>
-
-    <button type="submit" id="submitBtn" class="login-btn">
-      <span>Sign In</span>
-      <i class="fa-solid fa-arrow-right-to-bracket"></i>
-    </button>
-  </form>
-
-  <div class="divider">
-    <span>or sign in with</span>
   </div>
 
-  <div class="social-login-grid">
-    <button type="button" class="social-btn google-btn" id="googleLoginBtn">
-      <i class="fa-brands fa-google"></i>
-      <span>Google</span>
-    </button>
-    <button type="button" class="social-btn github-btn" id="githubLoginBtn">
-      <i class="fa-brands fa-github"></i>
-      <span>GitHub</span>
-    </button>
-  </div>
-
-  <div class="signup-link">
-    New to IronHand? <a href="register.html">Create an account</a>
-  </div>
 </div>
 
 <!-- Toast Container -->
@@ -659,11 +891,11 @@
     }, 2000);
   });
 
-  const loginForm = document.getElementById('loginForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const passwordInput = document.getElementById('password');
-  const eyeIcon = document.getElementById('eyeIcon');
-  const emailInput = document.getElementById('email');
+  const authContainer = document.getElementById('authContainer');
+  const toRegisterBtn = document.getElementById('toRegisterBtn');
+  const toLoginBtn = document.getElementById('toLoginBtn');
+  const mobileToRegister = document.getElementById('mobileToRegister');
+  const mobileToLogin = document.getElementById('mobileToLogin');
 
   // ── MOUSE FOLLOW GLOW EFFECT ──
   document.addEventListener('mousemove', (e) => {
@@ -676,13 +908,58 @@
     }
   });
 
-  // ── PASSWORD VISIBILITY TOGGLE ──
-  eyeIcon.addEventListener('click', () => {
-    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    eyeIcon.classList.toggle('fa-eye');
-    eyeIcon.classList.toggle('fa-eye-slash');
+  // ── SLIDING TOGGLE LISTENERS ──
+  toRegisterBtn.addEventListener('click', () => {
+    authContainer.classList.add('right-panel-active');
+    window.location.hash = 'register';
   });
+
+  toLoginBtn.addEventListener('click', () => {
+    authContainer.classList.remove('right-panel-active');
+    window.location.hash = '';
+  });
+
+  mobileToRegister.addEventListener('click', (e) => {
+    e.preventDefault();
+    authContainer.classList.add('right-panel-active');
+    window.location.hash = 'register';
+  });
+
+  mobileToLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    authContainer.classList.remove('right-panel-active');
+    window.location.hash = '';
+  });
+
+  // Handle Hash Changes dynamically
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#register') {
+      authContainer.classList.add('right-panel-active');
+    } else {
+      authContainer.classList.remove('right-panel-active');
+    }
+  });
+
+  // Check URL hash on page load
+  if (window.location.hash === '#register') {
+    authContainer.classList.add('right-panel-active');
+  }
+
+  // ── PASSWORD VISIBILITY TOGGLE ──
+  function setupEyeToggle(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    icon.addEventListener('click', () => {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+  }
+
+  setupEyeToggle('password', 'eyeIcon');
+  setupEyeToggle('regPassword', 'regEyeIcon');
+  setupEyeToggle('confirmPassword', 'confirmEyeIcon');
 
   // ── TOAST NOTIFICATION UTILITY ──
   function showToast(message, type = 'info') {
@@ -703,19 +980,13 @@
     `;
 
     container.appendChild(toast);
-
-    // Trigger reflow to enable transition
-    toast.offsetHeight;
-
-    // Show toast
+    toast.offsetHeight; // Force reflow
     toast.classList.add('show');
 
-    // Auto dismiss after 4 seconds
     const autoDismiss = setTimeout(() => {
       dismissToast(toast);
     }, 4000);
 
-    // Manual close button
     toast.querySelector('.toast-close').addEventListener('click', () => {
       clearTimeout(autoDismiss);
       dismissToast(toast);
@@ -726,7 +997,6 @@
     toast.classList.remove('show');
     toast.style.transform = 'translateY(-20px) scale(0.9)';
     toast.style.opacity = '0';
-    
     toast.addEventListener('transitionend', () => {
       toast.remove();
     });
@@ -734,15 +1004,15 @@
 
   // ── REMEMBER ME AUTOFILL ──
   document.addEventListener('DOMContentLoaded', () => {
+    const emailInput = document.getElementById('email');
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     if (rememberedEmail) {
       emailInput.value = rememberedEmail;
       document.getElementById('rememberMe').checked = true;
-      passwordInput.focus();
     }
   });
 
-  // ── MOCK/SIMULATION HANDLERS ──
+  // ── SIMULATION HANDLERS ──
   document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
     e.preventDefault();
     showToast("A password recovery link has been sent to your email (simulation).", "info");
@@ -756,7 +1026,10 @@
     showToast("GitHub authentication is not configured in this environment.", "error");
   });
 
-  // ── AUTHENTICATION LOGIC ──
+  // ── LOGIN FORM SUBMISSION ──
+  const loginForm = document.getElementById('loginForm');
+  const submitBtn = document.getElementById('submitBtn');
+
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -764,48 +1037,97 @@
     submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
     submitBtn.disabled = true;
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
     const rememberMe = document.getElementById('rememberMe').checked;
 
     try {
-        const response = await fetch('http://localhost:8082/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
+      const response = await fetch('http://localhost:8082/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-        if (response.ok) {
-            // Handle Remember Me
-            if (rememberMe) {
-                localStorage.setItem('rememberedEmail', email);
-            } else {
-                localStorage.removeItem('rememberedEmail');
-            }
-
-            // Store User Session Details
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userEmail', email); 
-            
-            showToast("Welcome back! Redirecting you...", "success");
-            
-            // Redirect after minor delay for the toast to be seen
-            setTimeout(() => {
-                window.location.href = 'index.html'; 
-            }, 1200);
+      if (response.ok) {
+        if (rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
         } else {
-            const errorText = await response.text();
-            showToast(errorText || "Invalid credentials. Please try again.", "error");
+          localStorage.removeItem('rememberedEmail');
         }
-    } catch (error) {
-        console.error("Link failure:", error);
-        showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
-    } finally {
-        // Wait slightly before enabling button so it doesn't look jumpy
+
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email); 
+        
+        showToast("Welcome back! Redirecting...", "success");
         setTimeout(() => {
-            submitBtn.innerHTML = originalBtnContent;
-            submitBtn.disabled = false;
-        }, 800);
+          window.location.href = 'index.html'; 
+        }, 1200);
+      } else {
+        const errorText = await response.text();
+        showToast(errorText || "Invalid credentials. Please try again.", "error");
+      }
+    } catch (error) {
+      console.error("Login failure:", error);
+      showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
+    } finally {
+      setTimeout(() => {
+        submitBtn.innerHTML = originalBtnContent;
+        submitBtn.disabled = false;
+      }, 800);
+    }
+  });
+
+  // ── REGISTER FORM SUBMISSION ──
+  const registerForm = document.getElementById('registerForm');
+  const regSubmitBtn = document.getElementById('regSubmitBtn');
+  const matchError = document.getElementById('matchError');
+
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    matchError.style.display = 'none';
+
+    if (password !== confirmPassword) {
+      matchError.style.display = 'block';
+      return;
+    }
+
+    const originalBtnContent = regSubmitBtn.innerHTML;
+    regSubmitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
+    regSubmitBtn.disabled = true;
+
+    try {
+      const response = await fetch('http://localhost:8082/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        showToast("Success! Account created. Sign in now.", "success");
+        setTimeout(() => {
+          authContainer.classList.remove('right-panel-active');
+          window.location.hash = '';
+          // Autofill registered email
+          document.getElementById('email').value = email;
+          document.getElementById('password').focus();
+        }, 1500);
+      } else {
+        const errorText = await response.text();
+        showToast(errorText || "Registration failed. Email might be in use.", "error");
+      }
+    } catch (error) {
+      console.error("Register failure:", error);
+      showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
+    } finally {
+      setTimeout(() => {
+        regSubmitBtn.innerHTML = originalBtnContent;
+        regSubmitBtn.disabled = false;
+      }, 800);
     }
   });
 </script>
