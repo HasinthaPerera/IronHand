@@ -2,85 +2,462 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Post a Job — IronHand</title>
 <link rel="icon" type="image/png" href="favicon.png" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <style>
-  :root { --bg: #05070a; --surface: #0c0f16; --border: rgba(255,255,255,0.08); --accent: #ffcc33; --text: #f0f2f5; --muted: #8a91ad; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 100px 6vw; }
-  
-  nav { position: fixed; top: 0; left: 0; right: 0; padding: 18px 6vw; background: rgba(5,7,10,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-  .logo { font-family: 'Syne'; font-weight: 800; font-size: 1.5rem; text-decoration: none; color: white; display: flex; align-items: center; gap: 8px; }
-  .logo span { color: var(--accent); }
-  .logo-img { width: 32px; height: 32px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--accent); }
+  :root {
+    --bg: #030508;
+    --surface: rgba(12, 15, 22, 0.6);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 204, 51, 0.35);
+    --accent: #ffcc33;
+    --accent-rgb: 255, 204, 51;
+    --accent-glow: rgba(255, 204, 51, 0.22);
+    --accent-secondary: #00e5ff;
+    --accent-secondary-rgb: 0, 229, 255;
+    --accent-secondary-glow: rgba(0, 229, 255, 0.18);
+    --text: #f3f5f8;
+    --muted: #8e96b3;
+    --card: rgba(18, 22, 32, 0.5);
+    --card-hover: rgba(26, 32, 46, 0.85);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --error: #ff4d4d;
+    --success: #00ff88;
+  }
 
-  .form-container { max-width: 700px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
-  h1 { font-family: 'Syne'; margin-bottom: 30px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; line-height: 1.6; min-height: 100vh; padding-top: 100px; position: relative; }
+
+  /* Subtle noise overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.015;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── BACKGROUND GLOW EFFECT ── */
+  .bg-glow {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 204, 51, 0.04) 0%, transparent 60%);
+    pointer-events: none; z-index: -1;
+  }
+  .ambient-blur {
+    position: fixed; width: 450px; height: 450px; border-radius: 50%;
+    filter: blur(160px); opacity: 0.1; pointer-events: none; z-index: -1;
+    animation: float-slow 25s infinite alternate ease-in-out;
+  }
+  .blur-1 { background: var(--accent); top: -15%; left: -15%; }
+  .blur-2 { background: var(--accent-secondary); bottom: -15%; right: -15%; animation-delay: -7s; }
   
-  .input-group { margin-bottom: 20px; }
-  label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 0.9rem; }
-  input, textarea, select { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: white; outline: none; }
-  input:focus, textarea:focus { border-color: var(--accent); }
+  @keyframes float-slow {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(120px, 90px) scale(1.25); }
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 6vw;
+    background: rgba(3, 5, 8, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .logo span { color: var(--accent); }
+  .logo-img { width: 32px; height: 32px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--accent); transition: all 0.3s ease; }
+  .logo:hover .logo-img { transform: rotate(5deg) scale(1.05); box-shadow: 0 0 12px var(--accent-glow); }
   
-  .submit-btn { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 8px; font-family: 'Syne'; font-weight: 800; cursor: pointer; transition: 0.3s; }
-  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(245,200,66,0.2); }
+  .nav-btn-group { display: flex; gap: 14px; align-items: center; }
+  .back-home-btn {
+    display: flex; align-items: center; gap: 8px; color: var(--muted);
+    text-decoration: none; font-size: 0.88rem; font-weight: 500;
+    transition: all 0.3s ease; padding: 10px 18px; border-radius: 12px;
+    border: 1px solid var(--border); background: rgba(255, 255, 255, 0.01);
+  }
+  .back-home-btn:hover {
+    color: #fff; border-color: var(--accent); background: rgba(255, 204, 51, 0.05);
+    transform: translateX(-3px);
+  }
+  .user-badge {
+    display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border); padding: 9px 16px; border-radius: 12px;
+    font-size: 0.82rem; color: var(--muted);
+  }
+  .user-badge i { color: var(--accent); }
+
+  /* ── MAIN GRID LAYOUT ── */
+  .post-job-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    max-width: 1300px;
+    margin: 30px auto 100px;
+    padding: 0 6vw;
+    align-items: start;
+  }
+  @media (max-width: 992px) {
+    .post-job-layout { grid-template-columns: 1fr; gap: 50px; }
+  }
+
+  /* ── WIZARD CONTAINER & STEPS ── */
+  .wizard-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 40px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Step Indicator Header */
+  .step-progress-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-bottom: 40px;
+  }
+  .step-progress-line {
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+  .step-progress-fill {
+    position: absolute;
+    top: 50%; left: 0;
+    width: 0%; height: 2px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-secondary) 100%);
+    transform: translateY(-50%);
+    transition: width 0.4s ease;
+    z-index: 2;
+  }
+  .step-indicator {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #0d1117;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: 'Syne'; font-size: 0.95rem;
+    color: var(--muted);
+    position: relative; z-index: 3;
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .step-indicator.active {
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 15px var(--accent-glow);
+    background: #141b25;
+  }
+  .step-indicator.completed {
+    border-color: var(--success);
+    background: var(--success);
+    color: #000;
+  }
+  .step-label {
+    position: absolute;
+    top: 48px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+  .step-indicator.active .step-label { color: #fff; font-weight: 700; }
+  .step-indicator.completed .step-label { color: var(--success); }
+
+  /* Wizard Panels animation */
+  .wizard-step-panel {
+    display: none;
+    animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .wizard-step-panel.active { display: block; }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 { font-family: 'Syne'; font-size: 2rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
+  h1 span { color: var(--accent); }
+  .panel-subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+
+  /* ── FORM CONTROLS ── */
+  .input-group { margin-bottom: 24px; position: relative; }
+  label { display: block; margin-bottom: 10px; color: #fff; font-size: 0.88rem; font-weight: 600; letter-spacing: 0.5px; }
+  
+  .input-wrapper { position: relative; display: flex; align-items: center; }
+  .input-wrapper i { position: absolute; left: 16px; color: var(--muted); font-size: 1rem; transition: color 0.3s; pointer-events: none; }
+  input, textarea, select {
+    width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border); border-radius: 12px; color: #fff;
+    font-family: 'DM Sans', sans-serif; outline: none; transition: all 0.3s;
+    font-size: 0.95rem;
+  }
+  input[type="text"], input[type="number"] { padding-left: 46px; }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent); background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 0 0 4px rgba(255, 204, 51, 0.12);
+  }
+  input:focus ~ i { color: var(--accent); }
+
+  /* ── STEP 1: CATEGORY SELECTION GRID ── */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 576px) { .category-grid { grid-template-columns: 1fr; } }
+  .category-option {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .category-option i { font-size: 1.8rem; color: var(--muted); transition: all 0.3s; }
+  .category-option span { font-family: 'Syne'; font-size: 0.95rem; font-weight: 700; color: var(--muted); transition: color 0.3s; }
+  .category-option:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-2px);
+  }
+  .category-option.active {
+    background: rgba(255, 204, 51, 0.08);
+    border-color: var(--accent);
+    box-shadow: 0 8px 25px rgba(255, 204, 51, 0.12);
+  }
+  .category-option.active i { color: var(--accent); transform: scale(1.1); }
+  .category-option.active span { color: #fff; }
+
+  /* ── STEP 2: PHOTO DRAG & DROP & LOCATION ── */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.01);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(255, 204, 51, 0.03);
+  }
+  .upload-zone i { font-size: 2.2rem; color: var(--muted); transition: color 0.3s; }
+  .upload-zone:hover i { color: var(--accent); }
+  .upload-zone p { font-size: 0.85rem; color: var(--muted); }
+  .upload-zone strong { color: #fff; }
+  
+  .upload-preview-container {
+    display: flex; gap: 12px; margin-top: 15px; flex-wrap: wrap;
+  }
+  .upload-thumb-wrapper {
+    position: relative; width: 68px; height: 68px;
+    border-radius: 10px; border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .upload-thumb { width: 100%; height: 100%; object-fit: cover; }
+  .upload-thumb-remove {
+    position: absolute; top: 3px; right: 3px;
+    width: 18px; height: 18px; background: var(--error); border: none;
+    border-radius: 50%; color: #fff; font-size: 0.65rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── STEP 3: BUDGET PRESETS & TIMELINE ── */
+  .budget-presets { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .budget-preset-btn {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 8px;
+    color: var(--muted); cursor: pointer; font-weight: 600;
+    transition: all 0.3s; font-size: 0.82rem;
+  }
+  .budget-preset-btn:hover { border-color: rgba(255, 204, 51, 0.5); color: #fff; }
+  .budget-preset-btn.active {
+    background: var(--accent); border-color: var(--accent); color: #000;
+  }
+
+  .timeline-presets { display: flex; gap: 10px; margin-top: 10px; }
+  .timeline-btn {
+    flex: 1; background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border); padding: 12px; border-radius: 10px;
+    color: var(--muted); font-weight: 600; cursor: pointer; text-align: center;
+    transition: all 0.3s; font-size: 0.85rem; font-family: 'Syne';
+  }
+  .timeline-btn:hover { border-color: rgba(0, 229, 255, 0.4); color: #fff; }
+  .timeline-btn.active {
+    background: var(--accent-secondary); border-color: var(--accent-secondary); color: #000;
+  }
+
+  /* Suggested tags */
+  .tags-wrapper { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .suggested-tag {
+    background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: var(--muted);
+    cursor: pointer; transition: all 0.3s; font-weight: 500;
+  }
+  .suggested-tag:hover { border-color: rgba(255, 255, 255, 0.25); color: #fff; }
+  .suggested-tag.active {
+    background: rgba(0, 229, 255, 0.08); border-color: var(--accent-secondary); color: var(--accent-secondary);
+  }
+
+  /* ── WIZARD FOOTER NAVIGATION ── */
+  .wizard-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 40px; padding-top: 25px; border-top: 1px solid var(--border);
+  }
+  .wizard-btn {
+    padding: 13px 26px; border-radius: 12px; font-family: 'Syne'; font-weight: 800;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font-size: 0.88rem; display: flex; align-items: center; gap: 8px; border: none;
+  }
+  .btn-back { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-back:hover { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.2); }
+  .btn-back:disabled { opacity: 0; pointer-events: none; }
+  
+  .btn-next { background: var(--accent); color: #000; }
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
+  
+  .btn-publish { background: var(--success); color: #000; display: none; }
+  .btn-publish:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2); }
+
+  /* ── RIGHT COLUMN: LIVE PREVIEW ── */
+  .preview-column { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 15px; }
+  .preview-header { font-family: 'Syne'; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .preview-header span { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; box-shadow: 0 0 8px var(--success); animation: pulse 1.8s infinite; }
+  
+  /* Job Card visual styles (copied/matched exactly from browse jobs) */
+  .preview-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 30px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 290px; position: relative; overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .preview-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(var(--accent-rgb), 0.06) 0%, transparent 45%);
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .preview-card:hover::before { opacity: 1; }
+  .preview-card > * { position: relative; z-index: 1; }
+  .preview-card:hover {
+    border-color: rgba(var(--accent-rgb), 0.45);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .job-badge {
+    background: rgba(255, 204, 51, 0.08);
+    border: 1px solid rgba(255, 204, 51, 0.15);
+    color: var(--accent);
+    padding: 5px 12px; border-radius: 8px;
+    font-size: 0.75rem; font-weight: 700;
+  }
+  
+  .card-title { font-family: 'Syne'; font-size: 1.3rem; color: #fff; margin-bottom: 10px; font-weight: 700; line-height: 1.3; }
+  .card-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; min-height: 48px; word-break: break-word; }
+
+  .job-meta-row { display: flex; flex-wrap: wrap; gap: 14px; margin: 15px 0; font-size: 0.82rem; color: var(--muted); }
+  .job-meta-item { display: flex; align-items: center; gap: 6px; }
+  .job-meta-item i { color: var(--accent); }
+  
+  .preview-tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0 20px; }
+  .preview-tag-pill {
+    background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+    padding: 3px 9px; border-radius: 6px; font-size: 0.68rem; color: var(--muted);
+  }
+
+  .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px solid var(--border); padding-top: 18px; }
+  .job-budget { font-family: 'Syne'; font-weight: 800; font-size: 1.35rem; color: #fff; }
+  .apply-btn {
+    padding: 9px 18px; border-radius: 10px; background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border); color: #fff; font-weight: 800; cursor: default; font-family: 'Syne';
+    display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem;
+  }
+
+  /* ── SUCCESS SPLASH OVERLAY ── */
+  .success-splash {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 20px 10px;
+    animation: scale-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes scale-up {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .success-icon-box {
+    width: 80px; height: 80px; border-radius: 50%; background: rgba(0, 255, 136, 0.08);
+    border: 2px solid var(--success); display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; color: var(--success); margin-bottom: 25px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+    animation: success-pulse 2s infinite ease-in-out;
+  }
+  @keyframes success-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(0, 255, 136, 0.15); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 255, 136, 0.3); }
+  }
+  .success-title { font-family: 'Syne'; font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 12px; letter-spacing: -1px; }
+  .success-desc { color: var(--muted); font-size: 0.95rem; max-width: 440px; margin-bottom: 30px; line-height: 1.6; }
+  
+  .redirect-countdown {
+    font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 8px;
+    background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 30px;
+  }
+  .redirect-countdown span { color: var(--accent); font-weight: 700; }
+  .redirect-countdown i { animation: spin 1s linear infinite; }
+
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
 
   /* ── FULL SCREEN PRELOADER ── */
   .preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #030508;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #030508;
+    display: flex; justify-content: center; align-items: center; z-index: 9999;
     transition: opacity 0.5s ease, visibility 0.5s ease;
   }
-  .preloader.fade-out {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-  .preloader-content {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .preloader-logo {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    z-index: 2;
-    animation: logo-pulse 2s infinite ease-in-out;
-  }
+  .preloader.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+  .preloader-content { position: relative; width: 120px; height: 120px; display: flex; justify-content: center; align-items: center; }
+  .preloader-logo { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent); z-index: 2; animation: logo-pulse 2s infinite ease-in-out; }
   .preloader-spinner {
-    position: absolute;
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: var(--accent);
-    border-right-color: var(--accent);
-    z-index: 1;
-    animation: preloader-spin 1s linear infinite;
-    box-shadow: 0 0 15px rgba(255, 204, 51, 0.1);
+    position: absolute; width: 110px; height: 110px; border-radius: 50%; border: 3px solid transparent;
+    border-top-color: var(--accent); border-right-color: var(--accent); z-index: 1;
+    animation: preloader-spin 1s linear infinite; box-shadow: 0 0 15px rgba(255, 204, 51, 0.1);
   }
-  @keyframes preloader-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  @keyframes logo-pulse {
-    0%, 100% { transform: scale(0.95); opacity: 0.85; }
-    50% { transform: scale(1.05); opacity: 1; }
-  }
+  @keyframes preloader-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes logo-pulse { 0%, 100% { transform: scale(0.95); opacity: 0.85; } 50% { transform: scale(1.05); opacity: 1; } }
 </style>
 </head>
 <body>
@@ -93,41 +470,238 @@
   </div>
 </div>
 
+<!-- Ambient Background Glows -->
+<div class="bg-glow" id="bgGlow"></div>
+<div class="ambient-blur blur-1"></div>
+<div class="ambient-blur blur-2"></div>
+
+<!-- Navigation Header -->
 <nav>
-  <a href="index.html" class="logo"><img src="logo.jpg" alt="IronHand Logo" class="logo-img"> Iron<span>Hand</span></a>
-  <a href="index.html" style="color: var(--muted); text-decoration: none;">← Back to Home</a>
+  <a href="index.html" class="logo">
+    <img src="logo.jpg" alt="IronHand Logo" class="logo-img">
+    Iron<span>Hand</span>
+  </a>
+  <div class="nav-btn-group">
+    <div class="user-badge" id="userBadge">
+      <i class="fa-solid fa-user-shield"></i>
+      <span id="navUserEmail">loading...</span>
+    </div>
+    <a href="index.html" class="back-home-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>Back to Home</span>
+    </a>
+  </div>
 </nav>
 
-<div class="form-container">
-  <h1>Post a <span>New Job</span></h1>
-  <form id="jobForm">
-    <div class="input-group">
-      <label>Job Title</label>
-      <input type="text" id="title" placeholder="e.g. Need Kitchen Sink Repair" required>
+<div class="post-job-layout">
+  <!-- Left Side: Wizard Form Card -->
+  <div class="wizard-card" id="wizardCard">
+    <!-- Wizard step progress header -->
+    <div class="step-progress-wrapper" id="wizardHeader">
+      <div class="step-progress-line"></div>
+      <div class="step-progress-fill" id="progressFill"></div>
+      <div class="step-indicator active" data-step="1">
+        1
+        <div class="step-label">Category</div>
+      </div>
+      <div class="step-indicator" data-step="2">
+        2
+        <div class="step-label">Details</div>
+      </div>
+      <div class="step-indicator" data-step="3">
+        3
+        <div class="step-label">Budget</div>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Category</label>
-      <select id="category">
-        <option value="Plumbing">Plumbing</option>
-        <option value="Electrical">Electrical</option>
-        <option value="Construction">Construction</option>
-        <option value="Cleaning">Cleaning</option>
-      </select>
+
+    <!-- Active Form Form -->
+    <form id="jobForm" novalidate>
+      <!-- Hidden elements to sync category for submit payload compatibility -->
+      <input type="hidden" id="category" value="Plumbing">
+      
+      <!-- STEP 1: The Basics -->
+      <div class="wizard-step-panel active" data-step="1">
+        <h1>Select a <span>Service Category</span></h1>
+        <p class="panel-subtitle">Which professional trade matches the work you need done?</p>
+        
+        <div class="category-grid">
+          <div class="category-option active" data-value="Plumbing" data-icon="fa-faucet-drip">
+            <i class="fa-solid fa-faucet-drip"></i>
+            <span>Plumbing</span>
+          </div>
+          <div class="category-option" data-value="Electrical" data-icon="fa-bolt">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Electrical</span>
+          </div>
+          <div class="category-option" data-value="Construction" data-icon="fa-hammer">
+            <i class="fa-solid fa-hammer"></i>
+            <span>Construction</span>
+          </div>
+          <div class="category-option" data-value="Cleaning" data-icon="fa-soap">
+            <i class="fa-solid fa-soap"></i>
+            <span>Cleaning</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="title">Job Title</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <input type="text" id="title" placeholder="e.g. Install Living Room Ceiling Fan" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Details & Description -->
+      <div class="wizard-step-panel" data-step="2">
+        <h1>Describe the <span>Work Required</span></h1>
+        <p class="panel-subtitle">Provide details so professionals can submit accurate proposals.</p>
+        
+        <div class="input-group">
+          <label for="description">Task Details</label>
+          <textarea id="description" rows="5" placeholder="Specify tasks, measurements, materials needed, and any accessibility issues..." required></textarea>
+        </div>
+
+        <div class="input-group">
+          <label for="location">Location</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-location-dot"></i>
+            <input type="text" id="location" placeholder="e.g. 15 Galle Road, Colombo 03" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Attach Photos of the Area (Simulated)</label>
+          <div class="upload-zone" id="uploadZone">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p><strong>Click to upload</strong> or drag & drop files here</p>
+            <p style="font-size: 0.75rem; margin-top: 2px;">PNG, JPG up to 10MB</p>
+            <input type="file" id="fileInput" multiple style="display: none;" accept="image/*">
+          </div>
+          <div class="upload-preview-container" id="uploadPreviews"></div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Budget & Timeline -->
+      <div class="wizard-step-panel" data-step="3">
+        <h1>Budget & <span>Timeframe</span></h1>
+        <p class="panel-subtitle">Outline your financial expectations and task urgency.</p>
+
+        <div class="input-group">
+          <label for="budget">Allocated Budget ($)</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-dollar-sign"></i>
+            <input type="number" id="budget" min="5" placeholder="e.g. 150.00" required>
+          </div>
+          <div class="budget-presets">
+            <button type="button" class="budget-preset-btn" data-value="50">Micro ($50)</button>
+            <button type="button" class="budget-preset-btn" data-value="150">Medium ($150)</button>
+            <button type="button" class="budget-preset-btn" data-value="350">Major ($350)</button>
+            <button type="button" class="budget-preset-btn" data-value="750">Premium ($750+)</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Required Urgency</label>
+          <div class="timeline-presets">
+            <button type="button" class="timeline-btn active" data-timeline="Emergency">Emergency</button>
+            <button type="button" class="timeline-btn" data-timeline="Within 7 Days">This Week</button>
+            <button type="button" class="timeline-btn" data-timeline="Flexible">Flexible</button>
+          </div>
+          <input type="hidden" id="urgency" value="Emergency">
+        </div>
+
+        <div class="input-group">
+          <label>Add Quick Description Badges</label>
+          <div class="tags-wrapper" id="tagsContainer">
+            <!-- Dynamic tags injected based on selected category -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Wizard Navigation Footer -->
+      <div class="wizard-footer">
+        <button type="button" class="wizard-btn btn-back" id="btnBack" disabled>
+          <i class="fa-solid fa-chevron-left"></i>
+          <span>Previous Step</span>
+        </button>
+        <button type="button" class="wizard-btn btn-next" id="btnNext">
+          <span>Next Step</span>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <button type="submit" class="wizard-btn btn-publish" id="btnPublish">
+          <span>Publish Listing</span>
+          <i class="fa-solid fa-rocket"></i>
+        </button>
+      </div>
+    </form>
+
+    <!-- Success Splash Display -->
+    <div class="success-splash" id="successSplash">
+      <div class="success-icon-box">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2 class="success-title">Listing Posted!</h2>
+      <p class="success-desc" id="successDesc">Your listing for "Installing Living Room Ceiling Fan" is now live. Local service providers are being notified to submit proposals.</p>
+      <div class="redirect-countdown">
+        <i class="fa-solid fa-circle-notch"></i>
+        <span>Returning to Home in <strong id="redirectCounter">3</strong>s</span>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Description</label>
-      <textarea id="description" rows="4" placeholder="Describe the work in detail..."></textarea>
+  </div>
+
+  <!-- Right Side: Real-Time Live Preview -->
+  <div class="preview-column">
+    <div class="preview-header">
+      <span></span> Live Listing Preview
     </div>
-    <div class="input-group">
-      <label>Budget ($)</label>
-      <input type="number" id="budget" placeholder="100.00">
-      <div class="input-group">
-  <label>Location</label>
-  <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka">
-</div>
+    
+    <div class="preview-card" id="previewCard">
+      <div class="card-top">
+        <span class="job-badge" id="previewBadge">
+          <i class="fa-solid fa-faucet-drip" style="margin-right: 5px;" id="previewCategoryIcon"></i>
+          <span id="previewCategoryText">Plumbing</span>
+        </span>
+        <div style="font-size: 0.75rem; color: var(--muted);" id="previewUrgency">
+          <i class="fa-solid fa-fire" style="color: var(--error); margin-right: 4px;"></i> Emergency
+        </div>
+      </div>
+
+      <div>
+        <h2 class="card-title" id="previewTitle">Untitled Job Posting...</h2>
+        <p class="card-bio" id="previewDescription">A detailed description of the task requirements will appear here as you type...</p>
+        
+        <div class="preview-tags-row" id="previewTagsRow" style="display: none;">
+          <!-- Active tags shown here -->
+        </div>
+
+        <div class="job-meta-row">
+          <div class="job-meta-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span id="previewLocation">Location pending</span>
+          </div>
+          <div class="job-meta-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Today</span>
+          </div>
+          <div class="job-meta-item" id="previewPhotosBadge" style="display: none; color: var(--accent-secondary);">
+            <i class="fa-solid fa-paperclip" style="color: var(--accent-secondary);"></i>
+            <span id="previewPhotoCount">1 photo attached</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="job-budget">
+          $ <span id="previewBudget">0</span>
+        </div>
+        <button class="apply-btn">
+          <span>Apply Now</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
-    <button type="submit" class="submit-btn">Publish Job Listing</button>
-  </form>
+  </div>
 </div>
 
 <script>
@@ -138,20 +712,420 @@
       if (preloader) {
         preloader.classList.add('fade-out');
       }
-    }, 2000);
+    }, 800);
+
+    // Load active user email
+    const userEmail = localStorage.getItem('userEmail') || 'guest@ironhand.com';
+    document.getElementById('navUserEmail').innerText = userEmail;
+    
+    // Inject initial category tags
+    renderSuggestedTags();
   });
 
+  // ── AMBIENT MOUSE TRACKING GLOW ──
+  const bgGlow = document.getElementById('bgGlow');
+  document.addEventListener('mousemove', (e) => {
+    if (bgGlow) {
+      bgGlow.style.setProperty('--x', e.clientX + 'px');
+      bgGlow.style.setProperty('--y', e.clientY + 'px');
+    }
+  });
+
+  // ── PREVIEW CARD SPOTLIGHT EFFECT ──
+  const previewCard = document.getElementById('previewCard');
+  previewCard.addEventListener('mousemove', (e) => {
+    const rect = previewCard.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    previewCard.style.setProperty('--mouse-x', `${x}px`);
+    previewCard.style.setProperty('--mouse-y', `${y}px`);
+  });
+
+  // ── DATA AND CATEGORIES DICTIONARY ──
+  const categoryMetadata = {
+    Plumbing: {
+      icon: 'fa-faucet-drip',
+      color: '#ffcc33',
+      tags: ['pipe-leak', 'clogged-drain', 'faucet-install', 'water-heater', 'low-pressure', 'sewer-repair']
+    },
+    Electrical: {
+      icon: 'fa-bolt',
+      color: '#00e5ff',
+      tags: ['short-circuit', 'wiring', 'panel-upgrade', 'light-fixture', 'outlet-install', 'smart-home']
+    },
+    Construction: {
+      icon: 'fa-hammer',
+      color: '#ff6b6b',
+      tags: ['drywall', 'roofing', 'carpentry', 'tiling', 'framing', 'masonry']
+    },
+    Cleaning: {
+      icon: 'fa-soap',
+      color: '#1dd1a1',
+      tags: ['deep-clean', 'carpet-shampoo', 'window-wash', 'move-out', 'post-renovation', 'office']
+    }
+  };
+
+  let activeTags = new Set();
+  let attachedImages = [];
+
+  // ── STEP SYSTEM WIZARD LOGIC ──
+  let currentStep = 1;
+  const totalSteps = 3;
+  
+  const panels = document.querySelectorAll('.wizard-step-panel');
+  const indicators = document.querySelectorAll('.step-indicator');
+  const progressFill = document.getElementById('progressFill');
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+  const btnPublish = document.getElementById('btnPublish');
+
+  function updateWizardUI() {
+    // Hide all steps, show active
+    panels.forEach(p => p.classList.remove('active'));
+    document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`).classList.add('active');
+
+    // Update progress markers
+    indicators.forEach(ind => {
+      const stepNum = parseInt(ind.getAttribute('data-step'));
+      ind.classList.remove('active', 'completed');
+      if (stepNum === currentStep) {
+        ind.classList.add('active');
+      } else if (stepNum < currentStep) {
+        ind.classList.add('completed');
+      }
+    });
+
+    // Calculate line progress percent
+    const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    progressFill.style.width = `${percent}%`;
+
+    // Button states
+    btnBack.disabled = (currentStep === 1);
+    
+    if (currentStep === totalSteps) {
+      btnNext.style.display = 'none';
+      btnPublish.style.display = 'flex';
+    } else {
+      btnNext.style.display = 'flex';
+      btnPublish.style.display = 'none';
+    }
+  }
+
+  // Input validation for step transitions
+  function validateCurrentStep() {
+    const activePanel = document.querySelector(`.wizard-step-panel[data-step="${currentStep}"]`);
+    const requiredInputs = activePanel.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredInputs.forEach(input => {
+      if (!input.checkValidity()) {
+        isValid = false;
+        input.reportValidity();
+        input.style.borderColor = 'var(--error)';
+        input.style.boxShadow = '0 0 0 4px rgba(255, 77, 77, 0.15)';
+      } else {
+        input.style.borderColor = 'var(--border)';
+        input.style.boxShadow = 'none';
+      }
+    });
+
+    return isValid;
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (validateCurrentStep()) {
+      currentStep++;
+      updateWizardUI();
+    }
+  });
+
+  btnBack.addEventListener('click', () => {
+    if (currentStep > 1) {
+      currentStep--;
+      updateWizardUI();
+    }
+  });
+
+  // ── CATEGORY SELECTION EVENT ──
+  const categoryOptions = document.querySelectorAll('.category-option');
+  const categoryInput = document.getElementById('category');
+
+  categoryOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      categoryOptions.forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      
+      const categoryValue = opt.getAttribute('data-value');
+      categoryInput.value = categoryValue;
+
+      // Update Preview Card Category
+      const meta = categoryMetadata[categoryValue];
+      const previewBadge = document.getElementById('previewBadge');
+      const categoryText = document.getElementById('previewCategoryText');
+      const iconEl = document.getElementById('previewCategoryIcon');
+
+      categoryText.innerText = categoryValue;
+      iconEl.className = `fa-solid ${meta.icon}`;
+      previewBadge.style.color = meta.color;
+      previewBadge.style.borderColor = `rgba(${hexToRgb(meta.color)}, 0.3)`;
+      previewBadge.style.background = `rgba(${hexToRgb(meta.color)}, 0.08)`;
+
+      // Render custom tags matching category
+      activeTags.clear();
+      renderSuggestedTags();
+      updatePreviewTags();
+    });
+  });
+
+  // Helper function to calculate RGB values for border backgrounds
+  function hexToRgb(hex) {
+    if (hex === '#ffcc33') return '255, 204, 51';
+    if (hex === '#00e5ff') return '0, 229, 255';
+    if (hex === '#ff6b6b') return '255, 107, 107';
+    if (hex === '#1dd1a1') return '29, 209, 161';
+    return '255, 255, 255';
+  }
+
+  // ── REAL TIME LIVE PREVIEW SYNC ──
+  const titleInput = document.getElementById('title');
+  const previewTitle = document.getElementById('previewTitle');
+  
+  titleInput.addEventListener('input', () => {
+    previewTitle.innerText = titleInput.value.trim() || 'Untitled Job Posting...';
+  });
+
+  const descriptionInput = document.getElementById('description');
+  const previewDescription = document.getElementById('previewDescription');
+
+  descriptionInput.addEventListener('input', () => {
+    previewDescription.innerText = descriptionInput.value.trim() || 'A detailed description of the task requirements will appear here as you type...';
+  });
+
+  const locationInput = document.getElementById('location');
+  const previewLocation = document.getElementById('previewLocation');
+
+  locationInput.addEventListener('input', () => {
+    previewLocation.innerText = locationInput.value.trim() || 'Location pending';
+  });
+
+  const budgetInput = document.getElementById('budget');
+  const previewBudget = document.getElementById('previewBudget');
+
+  budgetInput.addEventListener('input', () => {
+    const cleanValue = parseFloat(budgetInput.value) || 0;
+    previewBudget.innerText = cleanValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    
+    // Unset preset actives if manual input deviates
+    const presetBtns = document.querySelectorAll('.budget-preset-btn');
+    presetBtns.forEach(btn => {
+      if (btn.getAttribute('data-value') !== budgetInput.value) {
+        btn.classList.remove('active');
+      }
+    });
+  });
+
+  // Budget Quick Presets
+  const budgetPresets = document.querySelectorAll('.budget-preset-btn');
+  budgetPresets.forEach(btn => {
+    btn.addEventListener('click', () => {
+      budgetPresets.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const presetVal = btn.getAttribute('data-value');
+      budgetInput.value = presetVal;
+      previewBudget.innerText = parseFloat(presetVal).toFixed(0);
+    });
+  });
+
+  // Urgency & Timeframe Select
+  const timelineBtns = document.querySelectorAll('.timeline-btn');
+  const urgencyInput = document.getElementById('urgency');
+  const previewUrgency = document.getElementById('previewUrgency');
+
+  timelineBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      timelineBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const val = btn.getAttribute('data-timeline');
+      urgencyInput.value = val;
+
+      if (val === 'Emergency') {
+        previewUrgency.innerHTML = `<i class="fa-solid fa-fire" style="color: var(--error); margin-right: 4px;"></i> Emergency`;
+        previewUrgency.style.color = 'var(--text)';
+      } else if (val === 'Within 7 Days') {
+        previewUrgency.innerHTML = `<i class="fa-solid fa-bolt" style="color: var(--accent); margin-right: 4px;"></i> This Week`;
+        previewUrgency.style.color = 'var(--accent)';
+      } else {
+        previewUrgency.innerHTML = `<i class="fa-solid fa-calendar-check" style="color: var(--accent-secondary); margin-right: 4px;"></i> Flexible`;
+        previewUrgency.style.color = 'var(--muted)';
+      }
+    });
+  });
+
+  // Suggested tags rendering based on current category selection
+  const tagsContainer = document.getElementById('tagsContainer');
+  const previewTagsRow = document.getElementById('previewTagsRow');
+
+  function renderSuggestedTags() {
+    const category = categoryInput.value;
+    const meta = categoryMetadata[category] || categoryMetadata['Plumbing'];
+    
+    tagsContainer.innerHTML = '';
+    meta.tags.forEach(tag => {
+      const tagEl = document.createElement('div');
+      tagEl.className = 'suggested-tag';
+      tagEl.innerText = `+ #${tag}`;
+      tagEl.addEventListener('click', () => {
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+          tagEl.classList.remove('active');
+          tagEl.innerText = `+ #${tag}`;
+        } else {
+          activeTags.add(tag);
+          tagEl.classList.add('active');
+          tagEl.innerText = `✓ #${tag}`;
+        }
+        updatePreviewTags();
+      });
+      tagsContainer.appendChild(tagEl);
+    });
+  }
+
+  function updatePreviewTags() {
+    if (activeTags.size > 0) {
+      previewTagsRow.style.display = 'flex';
+      previewTagsRow.innerHTML = '';
+      activeTags.forEach(tag => {
+        const pill = document.createElement('span');
+        pill.className = 'preview-tag-pill';
+        pill.innerText = `#${tag}`;
+        previewTagsRow.appendChild(pill);
+      });
+    } else {
+      previewTagsRow.style.display = 'none';
+      previewTagsRow.innerHTML = '';
+    }
+  }
+
+  // ── MOCK FILE UPLOAD ZONE ──
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput = document.getElementById('fileInput');
+  const uploadPreviews = document.getElementById('uploadPreviews');
+  const previewPhotosBadge = document.getElementById('previewPhotosBadge');
+  const previewPhotoCount = document.getElementById('previewPhotoCount');
+
+  uploadZone.addEventListener('click', () => fileInput.click());
+  
+  // Drag events
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadZone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadZone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+    }, false);
+  });
+
+  uploadZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    handleUploadedFiles(files);
+  });
+
+  fileInput.addEventListener('change', () => {
+    handleUploadedFiles(fileInput.files);
+  });
+
+  function handleUploadedFiles(files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const fileData = {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            src: e.target.result
+          };
+          attachedImages.push(fileData);
+          renderThumbnails();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
+
+  function renderThumbnails() {
+    uploadPreviews.innerHTML = '';
+    attachedImages.forEach(img => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'upload-thumb-wrapper';
+      
+      const thumb = document.createElement('img');
+      thumb.className = 'upload-thumb';
+      thumb.src = img.src;
+      
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'upload-thumb-remove';
+      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        attachedImages = attachedImages.filter(item => item.id !== img.id);
+        renderThumbnails();
+      });
+
+      wrapper.appendChild(thumb);
+      wrapper.appendChild(removeBtn);
+      uploadPreviews.appendChild(wrapper);
+    });
+
+    // Update Live Preview Badge
+    if (attachedImages.length > 0) {
+      previewPhotosBadge.style.display = 'flex';
+      previewPhotoCount.innerText = attachedImages.length === 1 ? '1 photo attached' : `${attachedImages.length} photos attached`;
+    } else {
+      previewPhotosBadge.style.display = 'none';
+    }
+  }
+
+  // ── FORM SUBMISSION AND API INTERACTION ──
   document.getElementById('jobForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
+    if (!validateCurrentStep()) return;
+
+    // Show loading state on publish button
+    btnPublish.disabled = true;
+    btnPublish.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Publishing...</span>`;
+
     const userEmail = localStorage.getItem('userEmail') || 'anonymous@example.com';
+    
+    // Clean up title & description, append selected tags and timeframe for rich data storage
+    const titleVal = titleInput.value.trim();
+    let descVal = descriptionInput.value.trim();
+    
+    const selectedUrgency = urgencyInput.value;
+    
+    if (activeTags.size > 0) {
+      const tagsList = Array.from(activeTags).map(t => `#${t}`).join(' ');
+      descVal += `\n\n── Additional Info ──\nUrgency: ${selectedUrgency}\nTags: ${tagsList}`;
+    } else {
+      descVal += `\n\n── Additional Info ──\nUrgency: ${selectedUrgency}`;
+    }
+
     const jobData = {
-      title: document.getElementById('title').value,
-      category: document.getElementById('category').value,
-      description: document.getElementById('description').value,
-      budget: document.getElementById('budget').value,
-      location: document.getElementById('location').value, // Added location
-      postedBy: userEmail 
+      title: titleVal,
+      category: categoryInput.value,
+      description: descVal,
+      budget: parseFloat(budgetInput.value) || 0,
+      location: locationInput.value.trim(),
+      postedBy: userEmail
     };
 
     try {
@@ -162,13 +1136,48 @@
       });
 
       if (response.ok) {
-        alert("Success! Your job is now live.");
-        window.location.href = 'index.html';
+        // Success: Trigger transition animation to splash screen
+        triggerSuccessScreen(titleVal);
+      } else {
+        alert("Server responded with an error. Ensure backend handles the payload.");
+        resetPublishBtn();
       }
     } catch (error) {
-      alert("Error: Ensure your Java backend is running on 8082.");
+      alert("Error: Ensure your Java backend is running on port 8082.");
+      resetPublishBtn();
     }
   });
+
+  function resetPublishBtn() {
+    btnPublish.disabled = false;
+    btnPublish.innerHTML = `<span>Publish Listing</span> <i class="fa-solid fa-rocket"></i>`;
+  }
+
+  function triggerSuccessScreen(jobTitle) {
+    // Hide progress header and form panels
+    document.getElementById('wizardHeader').style.display = 'none';
+    document.getElementById('jobForm').style.display = 'none';
+    
+    // Inject title to splash description
+    document.getElementById('successDesc').innerText = `Your listing for "${jobTitle}" is now live. Local service providers are being notified to submit proposals.`;
+    
+    // Show splash screen
+    const splash = document.getElementById('successSplash');
+    splash.style.display = 'flex';
+
+    // Start counter and redirect
+    let count = 3;
+    const counterEl = document.getElementById('redirectCounter');
+    
+    const interval = setInterval(() => {
+      count--;
+      counterEl.innerText = count;
+      if (count <= 0) {
+        clearInterval(interval);
+        window.location.href = 'jobs.html'; // Redirect to browse jobs to see their listing live!
+      }
+    }, 1000);
+  }
 </script>
 </body>
-</html>
+</html>
