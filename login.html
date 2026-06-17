@@ -10,16 +10,21 @@
 
 <style>
   :root {
-    --bg: #030508;
-    --surface: rgba(12, 15, 22, 0.6);
-    --border: rgba(255, 255, 255, 0.08);
+    --bg: #04060a;
+    --surface: rgba(12, 15, 22, 0.65);
+    --border: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(255, 204, 51, 0.35);
     --accent: #ffcc33;
-    --accent-glow: rgba(255, 204, 51, 0.25);
+    --accent-rgb: 255, 204, 51;
+    --accent-glow: rgba(255, 204, 51, 0.22);
     --accent-hover: #e6b82e;
     --accent-secondary: #00e5ff;
-    --text: #f0f2f5;
-    --muted: #8a91ad;
+    --accent-secondary-rgb: 0, 229, 255;
+    --accent-secondary-glow: rgba(0, 229, 255, 0.2);
+    --text: #f3f5f8;
+    --muted: #8e96b3;
     --error: #ff4d4d;
+    --success: #00ff88;
   }
 
   *, *::before, *::after {
@@ -38,25 +43,52 @@
     min-height: 100vh; 
     margin: 0;
     padding: 40px 20px;
-    background: radial-gradient(circle at center, #10141d 0%, var(--bg) 100%);
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
   }
 
+  /* Ambient noise overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.015;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Interactive grid background */
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+    background-size: 60px 60px;
+    background-position: center center;
+    mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 25%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), black 25%, transparent 70%);
+    pointer-events: none; z-index: -1;
+    transition: background 0.15s ease-out;
+  }
+
   /* ── BACKGROUND GLOW EFFECT ── */
   .bg-glow {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 204, 51, 0.05) 0%, transparent 60%);
+    background: 
+      radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(var(--accent-rgb), 0.06) 0%, transparent 45%),
+      radial-gradient(circle at calc(100% - var(--x, 50%)) calc(100% - var(--y, 50%)), rgba(var(--accent-secondary-rgb), 0.04) 0%, transparent 45%);
     pointer-events: none; z-index: -1;
   }
   .ambient-blur {
     position: fixed; width: 450px; height: 450px; border-radius: 50%;
     filter: blur(160px); opacity: 0.12; pointer-events: none; z-index: -1;
-    animation: float-slow 25s infinite alternate;
+    animation: float-slow 22s infinite alternate ease-in-out;
   }
-  .blur-1 { background: #ffcc33; top: -15%; left: -15%; }
-  .blur-2 { background: #00e5ff; bottom: -15%; right: -15%; animation-delay: -7s; }
+  .blur-1 { background: var(--accent); top: -15%; left: -15%; }
+  .blur-2 { background: var(--accent-secondary); bottom: -15%; right: -15%; animation-delay: -7s; }
   
   @keyframes float-slow {
     0% { transform: translate(0, 0) scale(1); }
@@ -412,8 +444,10 @@
     transform: translateY(-2px);
   }
 
-  .google-btn:hover { border-color: #4285F4; box-shadow: 0 8px 20px rgba(66, 133, 244, 0.12); }
-  .github-btn:hover { border-color: #fff; box-shadow: 0 8px 20px rgba(255, 255, 255, 0.08); }
+  .google-btn:hover { border-color: #4285F4; box-shadow: 0 8px 20px rgba(66, 133, 244, 0.15); background: rgba(66, 133, 244, 0.05); }
+  .google-btn:hover i { color: #4285F4; }
+  .github-btn:hover { border-color: #fff; box-shadow: 0 8px 20px rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.05); }
+  .github-btn:hover i { color: #fff; }
 
   .error-msg {
     color: var(--error);
@@ -444,10 +478,7 @@
   }
 
   .overlay {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: 0 0;
+    background: linear-gradient(135deg, #07090e 0%, #111622 100%);
     color: #ffffff;
     position: relative;
     left: -100%;
@@ -455,6 +486,25 @@
     width: 200%;
     transform: translateX(0);
     transition: transform 0.6s ease-in-out;
+  }
+
+  /* Shifting ambient glow orb inside overlay */
+  .overlay::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(255, 204, 51, 0.08) 0%, rgba(0, 229, 255, 0.05) 50%, transparent 80%);
+    pointer-events: none;
+    z-index: 1;
+    animation: shift-glow 15s infinite alternate ease-in-out;
+  }
+
+  @keyframes shift-glow {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(10%, 10%) rotate(360deg); }
   }
 
   .auth-container.right-panel-active .overlay {
@@ -723,6 +773,153 @@
     0%, 100% { transform: scale(0.95); opacity: 0.85; }
     50% { transform: scale(1.05); opacity: 1; }
   }
+
+  .preloader-brand {
+    position: absolute;
+    bottom: -40px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .preloader-brand span {
+    color: var(--accent);
+  }
+
+  /* ── MULTI-VIEW TRANSITIONS ── */
+  .auth-form-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 50px;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(15px);
+  }
+  
+  .auth-form-view.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    position: relative;
+  }
+
+  /* ── REGISTRATION FORM CYAN OVERRIDES ── */
+  #registerForm h2 span {
+    color: var(--accent-secondary);
+  }
+  #registerForm .input-wrapper input:focus {
+    border-color: var(--accent-secondary);
+    box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.15);
+  }
+  #registerForm .input-wrapper input:focus ~ .field-icon {
+    color: var(--accent-secondary);
+  }
+  #registerForm .toggle-password:hover {
+    color: var(--accent-secondary);
+  }
+  #registerForm .mobile-toggle-text a {
+    color: var(--accent-secondary);
+  }
+  
+  .signup-btn {
+    background: var(--accent-secondary) !important;
+  }
+  .signup-btn:hover {
+    box-shadow: 0 15px 30px rgba(0, 229, 255, 0.25) !important;
+    background: #33ebff !important;
+  }
+
+  /* ── PASSWORD STRENGTH METER ── */
+  .password-strength-container {
+    margin-top: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .strength-bar-bg {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .strength-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--error);
+    transition: all 0.4s ease;
+  }
+  .strength-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .strength-label span {
+    font-weight: 700;
+  }
+  .password-criteria {
+    margin-top: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 15px;
+  }
+  .criterion {
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+  }
+  .criterion i {
+    font-size: 0.75rem;
+    transition: all 0.3s;
+  }
+  .criterion.valid {
+    color: var(--success);
+  }
+  .criterion.valid i {
+    color: var(--success);
+  }
+
+  /* ── INTERACTIVE TOAST ACTIONS ── */
+  .toast-action-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'Syne';
+    cursor: pointer;
+    margin-top: 4px;
+    text-align: center;
+    transition: all 0.2s;
+    width: max-content;
+  }
+  .toast-action-btn:hover {
+    background: #fff;
+    transform: translateY(-1px);
+  }
+
+  .back-to-login-row {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.88rem;
+  }
 </style>
 </head>
 <body>
@@ -732,6 +929,7 @@
   <div class="preloader-content">
     <img src="logo.jpg" alt="IronHand Logo" class="preloader-logo">
     <div class="preloader-spinner"></div>
+    <div class="preloader-brand">Iron<span>Hand</span></div>
   </div>
 </div>
 
@@ -770,6 +968,21 @@
           <input type="password" id="regPassword" required placeholder="At least 8 characters" minlength="8" autocomplete="new-password">
           <i class="fa-solid fa-eye toggle-password" id="regEyeIcon"></i>
         </div>
+        
+        <!-- Password Strength Meter -->
+        <div class="password-strength-container" id="strengthContainer">
+          <div class="strength-bar-bg">
+            <div class="strength-bar-fill" id="strengthBar"></div>
+          </div>
+          <div class="strength-label" id="strengthLabel">Password Strength: <span>Empty</span></div>
+        </div>
+        
+        <!-- Password Criteria List -->
+        <div class="password-criteria" id="criteriaList">
+          <div class="criterion" data-criteria="length"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</div>
+          <div class="criterion" data-criteria="uppercase"><i class="fa-solid fa-circle-xmark"></i> An uppercase letter (A-Z)</div>
+          <div class="criterion" data-criteria="number"><i class="fa-solid fa-circle-xmark"></i> A number (0-9)</div>
+        </div>
       </div>
 
       <div class="input-group">
@@ -782,7 +995,7 @@
         <div id="matchError" class="error-msg">Passwords do not match</div>
       </div>
 
-      <button type="submit" id="regSubmitBtn" class="auth-btn">
+      <button type="submit" id="regSubmitBtn" class="auth-btn signup-btn">
         <span>Sign Up</span>
         <i class="fa-solid fa-user-plus"></i>
       </button>
@@ -795,7 +1008,8 @@
 
   <!-- LOGIN Form Container -->
   <div class="form-container login-container">
-    <form id="loginForm">
+    <!-- Login Form View -->
+    <form id="loginForm" class="auth-form-view active">
       <h2>Sign <span>In</span></h2>
       <p class="subtitle">Secure authentication for the IronHand network.</p>
       
@@ -849,6 +1063,31 @@
         New to IronHand? <a href="#" id="mobileToRegister">Create account</a>
       </div>
     </form>
+
+    <!-- Forgot Password Form View -->
+    <form id="forgotPasswordForm" class="auth-form-view">
+      <h2>Reset <span>Password</span></h2>
+      <p class="subtitle">Enter your email address to request a secure link.</p>
+      
+      <div class="input-group">
+        <label for="forgotEmail">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-envelope field-icon"></i>
+          <input type="email" id="forgotEmail" required placeholder="name@company.com" autocomplete="email">
+        </div>
+      </div>
+
+      <button type="submit" id="forgotSubmitBtn" class="auth-btn">
+        <span>Send Recovery Link</span>
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+
+      <div class="back-to-login-row">
+        <a href="#" id="backToLoginBtn" class="forgot-pw-link">
+          <i class="fa-solid fa-arrow-left"></i> Back to Sign In
+        </a>
+      </div>
+    </form>
   </div>
 
   <!-- Overlay Panel Container -->
@@ -882,14 +1121,22 @@
 
 <script>
   // ── PRELOADER LOGIC ──
-  window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-      const preloader = document.getElementById('preloader');
-      if (preloader) {
+  window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      setTimeout(() => {
         preloader.classList.add('fade-out');
-      }
-    }, 2000);
+      }, 500);
+    }
   });
+
+  // Fallback preloader dismissal
+  setTimeout(() => {
+    const preloader = document.getElementById('preloader');
+    if (preloader && !preloader.classList.contains('fade-out')) {
+      preloader.classList.add('fade-out');
+    }
+  }, 1500);
 
   const authContainer = document.getElementById('authContainer');
   const toRegisterBtn = document.getElementById('toRegisterBtn');
@@ -906,6 +1153,8 @@
       bgGlow.style.setProperty('--x', `${x}%`);
       bgGlow.style.setProperty('--y', `${y}%`);
     }
+    document.body.style.setProperty('--x', `${x}%`);
+    document.body.style.setProperty('--y', `${y}%`);
   });
 
   // ── SLIDING TOGGLE LISTENERS ──
@@ -949,6 +1198,7 @@
   function setupEyeToggle(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
+    if (!input || !icon) return;
     icon.addEventListener('click', () => {
       const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
       input.setAttribute('type', type);
@@ -961,8 +1211,149 @@
   setupEyeToggle('regPassword', 'regEyeIcon');
   setupEyeToggle('confirmPassword', 'confirmEyeIcon');
 
+  // ── DYNAMIC FORGOT PASSWORD TRANSITION ──
+  const mainLoginForm = document.getElementById('loginForm');
+  const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+  const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+  const backToLoginBtn = document.getElementById('backToLoginBtn');
+
+  forgotPasswordBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    mainLoginForm.classList.remove('active');
+    setTimeout(() => {
+      forgotPasswordForm.classList.add('active');
+      document.getElementById('forgotEmail').focus();
+    }, 200);
+  });
+
+  backToLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    forgotPasswordForm.classList.remove('active');
+    setTimeout(() => {
+      mainLoginForm.classList.add('active');
+      document.getElementById('email').focus();
+    }, 200);
+  });
+
+  // ── FORGOT PASSWORD SUBMISSION SIMULATION ──
+  const forgotSubmitBtn = document.getElementById('forgotSubmitBtn');
+  forgotPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('forgotEmail').value.trim();
+    
+    const originalBtnContent = forgotSubmitBtn.innerHTML;
+    forgotSubmitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Dispatching...';
+    forgotSubmitBtn.disabled = true;
+
+    setTimeout(() => {
+      showToast(`A recovery link has been dispatched to ${email}.`, "success");
+      forgotSubmitBtn.innerHTML = originalBtnContent;
+      forgotSubmitBtn.disabled = false;
+      
+      // Auto return to login
+      setTimeout(() => {
+        forgotPasswordForm.classList.remove('active');
+        setTimeout(() => {
+          mainLoginForm.classList.add('active');
+          document.getElementById('email').value = email;
+          document.getElementById('password').focus();
+        }, 200);
+      }, 1800);
+    }, 1200);
+  });
+
+  // ── PASSWORD STRENGTH METER LOGIC ──
+  const regPassword = document.getElementById('regPassword');
+  const strengthBar = document.getElementById('strengthBar');
+  const strengthLabel = document.getElementById('strengthLabel').querySelector('span');
+  const strengthContainer = document.getElementById('strengthContainer');
+  const criteriaList = document.getElementById('criteriaList');
+  const criteriaItems = {
+    length: document.querySelector('[data-criteria="length"]'),
+    uppercase: document.querySelector('[data-criteria="uppercase"]'),
+    number: document.querySelector('[data-criteria="number"]')
+  };
+
+  regPassword.addEventListener('input', () => {
+    const val = regPassword.value;
+    if (val.length > 0) {
+      strengthContainer.style.display = 'flex';
+      criteriaList.style.display = 'flex';
+    } else {
+      strengthContainer.style.display = 'none';
+      criteriaList.style.display = 'none';
+    }
+
+    const hasLength = val.length >= 8;
+    const hasUppercase = /[A-Z]/.test(val);
+    const hasNumber = /[0-9]/.test(val);
+
+    updateCriterion('length', hasLength);
+    updateCriterion('uppercase', hasUppercase);
+    updateCriterion('number', hasNumber);
+
+    let score = 0;
+    if (hasLength) score++;
+    if (hasUppercase) score++;
+    if (hasNumber) score++;
+
+    if (score === 0) {
+      strengthBar.style.width = '0%';
+      strengthBar.style.backgroundColor = 'var(--error)';
+      strengthLabel.textContent = 'Empty';
+      strengthLabel.style.color = 'var(--muted)';
+    } else if (score === 1) {
+      strengthBar.style.width = '33%';
+      strengthBar.style.backgroundColor = '#ff4d4d';
+      strengthLabel.textContent = 'Weak';
+      strengthLabel.style.color = '#ff4d4d';
+    } else if (score === 2) {
+      strengthBar.style.width = '66%';
+      strengthBar.style.backgroundColor = '#ffcc33';
+      strengthLabel.textContent = 'Medium';
+      strengthLabel.style.color = '#ffcc33';
+    } else if (score === 3) {
+      strengthBar.style.width = '100%';
+      strengthBar.style.backgroundColor = '#00ff88';
+      strengthLabel.textContent = 'Strong';
+      strengthLabel.style.color = '#00ff88';
+    }
+  });
+
+  function updateCriterion(key, isValid) {
+    const item = criteriaItems[key];
+    if (!item) return;
+    const icon = item.querySelector('i');
+    if (isValid) {
+      item.classList.add('valid');
+      icon.className = 'fa-solid fa-circle-check';
+    } else {
+      item.classList.remove('valid');
+      icon.className = 'fa-solid fa-circle-xmark';
+    }
+  }
+
+  // ── REAL-TIME CONFIRM PASSWORD MATCH CHECK ──
+  const confirmPassword = document.getElementById('confirmPassword');
+  const matchError = document.getElementById('matchError');
+
+  function checkPasswordMatch() {
+    if (confirmPassword.value.length === 0) {
+      matchError.style.display = 'none';
+      return;
+    }
+    if (regPassword.value !== confirmPassword.value) {
+      matchError.style.display = 'block';
+    } else {
+      matchError.style.display = 'none';
+    }
+  }
+
+  regPassword.addEventListener('input', checkPasswordMatch);
+  confirmPassword.addEventListener('input', checkPasswordMatch);
+
   // ── TOAST NOTIFICATION UTILITY ──
-  function showToast(message, type = 'info') {
+  function showToast(message, type = 'info', isInteractive = false) {
     const container = document.getElementById('toastContainer');
     if (!container) return;
 
@@ -973,9 +1364,17 @@
     if (type === 'success') iconClass = 'fa-circle-check';
     if (type === 'error') iconClass = 'fa-circle-exclamation';
 
+    let actionHtml = '';
+    if (isInteractive) {
+      actionHtml = `<div class="toast-action-btn" id="launchDemoBtn">Launch Demo Mode</div>`;
+    }
+
     toast.innerHTML = `
       <i class="fa-solid ${iconClass} toast-icon"></i>
-      <span class="toast-message">${message}</span>
+      <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+        <span class="toast-message">${message}</span>
+        ${actionHtml}
+      </div>
       <button class="toast-close"><i class="fa-solid fa-xmark"></i></button>
     `;
 
@@ -983,9 +1382,25 @@
     toast.offsetHeight; // Force reflow
     toast.classList.add('show');
 
+    // Setup launch demo action
+    if (isInteractive) {
+      const demoBtn = toast.querySelector('#launchDemoBtn');
+      if (demoBtn) {
+        demoBtn.addEventListener('click', () => {
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('userEmail', 'demo@ironhand.com');
+          localStorage.setItem('demoMode', 'true');
+          showToast("Demo Mode loaded! Accessing dashboard...", "success");
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1200);
+        });
+      }
+    }
+
     const autoDismiss = setTimeout(() => {
       dismissToast(toast);
-    }, 4000);
+    }, isInteractive ? 10000 : 4000);
 
     toast.querySelector('.toast-close').addEventListener('click', () => {
       clearTimeout(autoDismiss);
@@ -1006,24 +1421,19 @@
   document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const rememberedEmail = localStorage.getItem('rememberedEmail');
-    if (rememberedEmail) {
+    if (rememberedEmail && emailInput) {
       emailInput.value = rememberedEmail;
       document.getElementById('rememberMe').checked = true;
     }
   });
 
-  // ── SIMULATION HANDLERS ──
-  document.getElementById('forgotPasswordBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    showToast("A password recovery link has been sent to your email (simulation).", "info");
-  });
-
+  // ── SOCIAL LOGINS SIMULATION ──
   document.getElementById('googleLoginBtn').addEventListener('click', () => {
-    showToast("Google authentication is not configured in this environment.", "error");
+    showToast("Google authentication is offline. Launching simulated Demo Mode instead?", "error", true);
   });
 
   document.getElementById('githubLoginBtn').addEventListener('click', () => {
-    showToast("GitHub authentication is not configured in this environment.", "error");
+    showToast("GitHub authentication is offline. Launching simulated Demo Mode instead?", "error", true);
   });
 
   // ── LOGIN FORM SUBMISSION ──
@@ -1068,7 +1478,7 @@
       }
     } catch (error) {
       console.error("Login failure:", error);
-      showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
+      showToast("Server Offline: Spring Boot is not running on Port 8082.", "error", true);
     } finally {
       setTimeout(() => {
         submitBtn.innerHTML = originalBtnContent;
@@ -1080,7 +1490,6 @@
   // ── REGISTER FORM SUBMISSION ──
   const registerForm = document.getElementById('registerForm');
   const regSubmitBtn = document.getElementById('regSubmitBtn');
-  const matchError = document.getElementById('matchError');
 
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1112,7 +1521,6 @@
         setTimeout(() => {
           authContainer.classList.remove('right-panel-active');
           window.location.hash = '';
-          // Autofill registered email
           document.getElementById('email').value = email;
           document.getElementById('password').focus();
         }, 1500);
@@ -1122,7 +1530,7 @@
       }
     } catch (error) {
       console.error("Register failure:", error);
-      showToast("Server Offline: Ensure your Java app is running on Port 8082.", "error");
+      showToast("Server Offline: Spring Boot is not running on Port 8082.", "error", true);
     } finally {
       setTimeout(() => {
         regSubmitBtn.innerHTML = originalBtnContent;
